@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // LedgerPulse business data is persisted through the authenticated Flask API.
+    // Direct client-side Firestore access is intentionally disabled so the browser
+    // cannot bypass the API's tenant/RBAC checks.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

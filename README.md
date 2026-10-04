@@ -24,7 +24,7 @@ The Vite development server proxies `/api` to `http://localhost:5000` by default
 npm run build
 ```
 
-The included `Dockerfile` builds the SPA and serves it with Nginx. Pass `--build-arg BACKEND_UPSTREAM=<host:port>` when the frontend proxy is not using the default `backend:5000`.
+The included `Dockerfile` (renamed from the source ZIP's frontend Dockerfile) builds the SPA and serves it with Nginx. Pass `--build-arg BACKEND_UPSTREAM=<host:port>` when the frontend proxy is not using the default `backend:5000`.
 
 ## Firebase
 
