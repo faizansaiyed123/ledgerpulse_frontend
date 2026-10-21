@@ -132,9 +132,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row text-slate-800">
-      {/* Sidebar for Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0">
-        {/* Brand Header */}
         <div className="p-4 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
@@ -147,7 +145,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           </div>
         </div>
 
-        {/* Current Organization Selector */}
         <div className="p-3 border-b border-slate-800 relative">
           <button
             onClick={() => setOrgDropdownOpen(!orgDropdownOpen)}
@@ -165,7 +162,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           </button>
 
-          {/* Org Dropdown */}
           {orgDropdownOpen && (
             <div className="absolute top-full left-3 right-3 mt-1.5 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 p-2">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">Workspaces</p>
@@ -202,7 +198,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           )}
         </div>
 
-        {/* Navigation Items */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -231,7 +226,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           })}
         </nav>
 
-        {/* Sidebar Footer Role & User Preview */}
         <div className="p-3 border-t border-slate-800 bg-slate-950/40">
           <div className="flex items-center justify-between p-2 rounded-xl bg-slate-800/60 border border-slate-700/40">
             <div className="flex items-center gap-2 truncate">
@@ -254,11 +248,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </div>
       </aside>
 
-      {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Header */}
         <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between shrink-0 shadow-sm">
-          {/* Mobile Menu Button */}
           <div className="flex items-center gap-3 md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -269,7 +260,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <span className="font-bold text-slate-900 text-sm">LedgerPulse</span>
           </div>
 
-          {/* Left Context Info */}
           <div className="hidden md:flex items-center gap-3">
             <h2 className="text-base font-bold text-slate-900 capitalize tracking-tight">
               {activeTab === 'recurring' ? 'Recurring Billing' : activeTab === 'reports' ? 'Reports & P&L Statement' : activeTab}
@@ -280,9 +270,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             </span>
           </div>
 
-          {/* Right Header Utilities */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Seed Sample Data Button */}
             {(canManageOrg || isDemo) && <button
               onClick={handleSeedData}
               disabled={isSeeding}
@@ -293,7 +281,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <span className="hidden sm:inline">{isSeeding ? 'Seeding...' : 'Load Sample Data'}</span>
             </button>}
 
-            {/* Role Switcher (demo-only permission simulator) */}
             {isDemo && <div className="relative">
               <button
                 onClick={() => setRoleSwitcherOpen(!roleSwitcherOpen)}
@@ -332,7 +319,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               )}
             </div>}
 
-            {/* Quick Actions Dropdown */}
             <div className="flex items-center gap-1.5">
               {canEditFinancials && <button
                 onClick={onOpenNewInvoice}
@@ -350,7 +336,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               </button>
             </div>
 
-            {/* Notification Bell */}
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -362,7 +347,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 )}
               </button>
 
-              {/* Notification Popover */}
               {notificationsOpen && (
                 <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 p-4">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -417,7 +401,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           </div>
         </header>
 
-        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-900 text-slate-300 p-4 border-b border-slate-800 space-y-2 z-40">
             <div className="grid grid-cols-2 gap-2">
@@ -448,7 +431,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           </div>
         )}
 
-        {/* Main Body Content Scroll Area */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
             {children}
@@ -456,7 +438,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </main>
       </div>
 
-      {/* New Organization Modal */}
       {newOrgModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">

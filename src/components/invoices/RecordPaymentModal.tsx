@@ -67,7 +67,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
         </div>
 
-        {/* Invoice Summary Pill */}
         <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
           <div>
             <p className="text-slate-500">Invoice Balance Due</p>
@@ -147,7 +146,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             />
           </div>
 
-          {/* Real-time remaining preview */}
           <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 flex justify-between items-center text-[11px]">
             <span>Remaining Balance After Payment:</span>
             <span className="font-bold">{formatCurrency(remainingAfter, invoice.currency)}</span>

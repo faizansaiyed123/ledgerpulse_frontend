@@ -10,7 +10,6 @@ export const RecurringInvoicesList: React.FC = () => {
   const [runningBatch, setRunningBatch] = useState(false);
   const [batchNotice, setBatchNotice] = useState<string | null>(null);
 
-  // Form states
   const [customerId, setCustomerId] = useState(customers[0]?.id || '');
   const [frequency, setFrequency] = useState<RecurringFrequency>('monthly');
   const [nextRunDate, setNextRunDate] = useState(new Date().toISOString().split('T')[0]);
@@ -72,7 +71,6 @@ export const RecurringInvoicesList: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
@@ -108,7 +106,6 @@ export const RecurringInvoicesList: React.FC = () => {
         </div>
       </div>
 
-      {/* Batch notice banner */}
       {batchNotice && (
         <div className="p-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-900 text-xs flex items-center justify-between animate-fade-in">
           <span>{batchNotice}</span>
@@ -116,7 +113,6 @@ export const RecurringInvoicesList: React.FC = () => {
         </div>
       )}
 
-      {/* Schedules List */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -210,7 +206,6 @@ export const RecurringInvoicesList: React.FC = () => {
         </div>
       </div>
 
-      {/* New Recurring Schedule Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100">

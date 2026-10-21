@@ -41,7 +41,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
   const [activeTab, setActiveTab] = useState<'customers' | 'vendors'>(initialTab);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Customer Modal
   const [custModalOpen, setCustModalOpen] = useState(false);
   const [custToEdit, setCustToEdit] = useState<Customer | null>(null);
   const [custName, setCustName] = useState('');
@@ -52,7 +51,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
   const [custAddress, setCustAddress] = useState('');
   const [custTerms, setCustTerms] = useState(30);
 
-  // Vendor Modal
   const [vendModalOpen, setVendModalOpen] = useState(false);
   const [vendToEdit, setVendToEdit] = useState<Vendor | null>(null);
   const [vendName, setVendName] = useState('');
@@ -62,13 +60,11 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
   const [vendTaxId, setVendTaxId] = useState('');
   const [vendAddress, setVendAddress] = useState('');
 
-  // Selected for drawer review
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
 
   const currency = currentOrg?.currency || 'USD';
 
-  // Open Customer modal
   const handleOpenCustModal = (cust?: Customer) => {
     if (cust) {
       setCustToEdit(cust);
@@ -120,7 +116,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
     setCustModalOpen(false);
   };
 
-  // Open Vendor modal
   const handleOpenVendModal = (vend?: Vendor) => {
     if (vend) {
       setVendToEdit(vend);
@@ -183,7 +178,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
 
   return (
     <div className="space-y-4">
-      {/* Top Banner and Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Clients &amp; Vendors Directory</h2>
@@ -211,7 +205,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       </div>
 
-      {/* Tabs Switcher and Search */}
       <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
           <button
@@ -246,7 +239,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       </div>
 
-      {/* Customers Table View */}
       {activeTab === 'customers' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
@@ -334,7 +326,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       )}
 
-      {/* Vendors Table View */}
       {activeTab === 'vendors' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
@@ -416,7 +407,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       )}
 
-      {/* Customer Statement Drawer Modal */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
@@ -458,7 +448,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       )}
 
-      {/* Customer Form Modal */}
       {custModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
@@ -568,7 +557,6 @@ export const ContactsView: React.FC<ContactsViewProps> = ({ initialTab = 'custom
         </div>
       )}
 
-      {/* Vendor Form Modal */}
       {vendModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">

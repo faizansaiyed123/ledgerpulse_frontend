@@ -43,29 +43,23 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
   const currency = currentOrg?.currency || 'USD';
   const today = new Date().toISOString().split('T')[0];
 
-  // Global batch defaults
   const [defaultDate, setDefaultDate] = useState<string>(today);
   const [defaultMethod, setDefaultMethod] = useState<PaymentMethod>('bank_transfer');
   const [defaultRef, setDefaultRef] = useState<string>(`BATCH-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`);
   const [defaultNote, setDefaultNote] = useState<string>('Batch payment reconciliation');
 
-  // Search and filter inside the modal
   const [searchQuery, setSearchQuery] = useState('');
   const [overdueOnly, setOverdueOnly] = useState(false);
 
-  // Status
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedPayments, setProcessedPayments] = useState<Payment[] | null>(null);
 
-  // Filter invoices that have an outstanding balance due
   const payableInvoices = useMemo(() => {
     return invoices.filter((inv) => inv.balanceDue > 0 && inv.status !== 'cancelled');
   }, [invoices]);
 
-  // Maintain row state keyed by invoiceId
   const [rows, setRows] = useState<Record<string, BatchRowItem>>({});
 
-  // Initialize row items when modal opens or invoices change
   React.useEffect(() => {
     if (isOpen) {
       const initialRows: Record<string, BatchRowItem> = {};
@@ -86,7 +80,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Filtered view of payable invoices
   const filteredPayableInvoices = payableInvoices.filter((inv) => {
     const matchesSearch =
       inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -102,7 +95,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
   const selectedInvoices = payableInvoices.filter((inv) => rows[inv.id]?.selected);
   const totalBatchAmount = selectedInvoices.reduce((sum, inv) => sum + (rows[inv.id]?.amount || 0), 0);
 
-  // Toggle single row selection
   const toggleRow = (invoiceId: string) => {
     setRows((prev) => ({
       ...prev,
@@ -113,7 +105,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     }));
   };
 
-  // Select all currently visible invoices
   const selectAllVisible = () => {
     setRows((prev) => {
       const next = { ...prev };
@@ -126,7 +117,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     });
   };
 
-  // Clear all selections
   const clearSelection = () => {
     setRows((prev) => {
       const next = { ...prev };
@@ -137,7 +127,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     });
   };
 
-  // Select only overdue
   const selectOverdue = () => {
     setRows((prev) => {
       const next = { ...prev };
@@ -151,7 +140,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     });
   };
 
-  // Apply defaults to all selected rows
   const applyDefaultsToSelected = () => {
     setRows((prev) => {
       const next = { ...prev };
@@ -169,7 +157,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     });
   };
 
-  // Handle row amount change
   const handleAmountChange = (invoiceId: string, value: number, maxBalance: number) => {
     const validAmount = Math.max(0, Math.min(value, maxBalance));
     setRows((prev) => ({
@@ -181,7 +168,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
     }));
   };
 
-  // Submit batch processing
   const handleProcessBatch = async () => {
     if (selectedInvoices.length === 0 || totalBatchAmount <= 0) return;
 
@@ -223,7 +209,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-5xl w-full my-6 shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[95vh]">
-        {/* Header */}
         <div className="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-500/40 text-blue-400 flex items-center justify-center">
@@ -245,7 +230,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
         </div>
 
         {processedPayments ? (
-          /* Success Screen */
           <div className="p-8 sm:p-12 text-center space-y-5 overflow-y-auto flex-1">
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle className="w-8 h-8" />
@@ -259,7 +243,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
               </p>
             </div>
 
-            {/* Breakdown summary */}
             <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs">
               <div className="font-bold text-slate-800 text-left mb-2 flex items-center justify-between">
                 <span>Transactions Audit Summary</span>
@@ -289,9 +272,7 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
             </div>
           </div>
         ) : (
-          /* Interactive Batch Workspace */
           <div className="flex flex-col flex-1 overflow-hidden">
-            {/* Global Batch Preset Controls */}
             <div className="p-4 bg-slate-50 border-b border-slate-200 shrink-0">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
@@ -356,7 +337,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
               </div>
             </div>
 
-            {/* Filter and Selection Header */}
             <div className="p-3 bg-white border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5 text-xs shrink-0">
               <div className="flex items-center gap-2 flex-1 min-w-[200px] max-w-sm">
                 <div className="relative w-full">
@@ -412,7 +392,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
               </div>
             </div>
 
-            {/* Invoices List Table */}
             <div className="overflow-y-auto flex-1 p-3">
               {filteredPayableInvoices.length === 0 ? (
                 <div className="py-16 text-center text-slate-400">
@@ -568,7 +547,6 @@ export const BatchPaymentModal: React.FC<BatchPaymentModalProps> = ({
               )}
             </div>
 
-            {/* Bottom Summary & Process Action Bar */}
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
               <div className="flex items-center gap-4 text-xs">
                 <div>

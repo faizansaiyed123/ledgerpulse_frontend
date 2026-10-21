@@ -30,7 +30,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       }
       onClose();
     } catch {
-      // Error handled in AuthContext
     } finally {
       setSubmitting(false);
     }
@@ -43,7 +42,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       await signInWithGoogle();
       onClose();
     } catch {
-      // Handled
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +55,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-slate-100">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold transition-colors"
@@ -65,7 +62,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           ✕
         </button>
 
-        {/* Header */}
         <div className="text-center">
           <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/20 mb-3">
             <FileText className="w-6 h-6" />
@@ -80,7 +76,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </p>
         </div>
 
-        {/* Quick Demo Access Bar */}
         <div className="mt-5 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
@@ -113,7 +108,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </div>
         </div>
 
-        {/* Error message */}
         {error && (
           <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-start gap-2 text-xs text-red-700">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
@@ -121,7 +115,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </div>
         )}
 
-        {/* Google Sign In */}
         <div className="mt-5">
           <button
             type="button"
@@ -160,7 +153,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </div>
         </div>
 
-        {/* Email & Password Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
           {mode === 'register' && (
             <div>
@@ -220,7 +212,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </button>
         </form>
 
-        {/* Toggle mode */}
         <div className="mt-5 text-center text-xs text-slate-500">
           {mode === 'login' ? (
             <>

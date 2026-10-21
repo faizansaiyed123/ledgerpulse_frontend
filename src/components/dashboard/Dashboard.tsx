@@ -42,7 +42,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const currency = currentOrg?.currency || 'USD';
 
-  // Filtered invoices and expenses according to selected date range
   const filteredData = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -90,7 +89,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     };
   }, [invoices, expenses, dateFilter]);
 
-  // Upcoming due dates (invoices due in next 14 days)
   const upcomingDueInvoices = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
     const next14Days = new Date();
@@ -103,19 +101,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
       .slice(0, 4);
   }, [invoices]);
 
-  // Recent Invoices
   const recentInvoices = useMemo(() => {
     return [...invoices].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5);
   }, [invoices]);
 
-  // Recent Expenses
   const recentExpenses = useMemo(() => {
     return [...expenses].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5);
   }, [expenses]);
 
   return (
     <div className="space-y-6">
-      {/* Top Banner and Filter Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">Executive Financial Dashboard</h2>
@@ -124,7 +119,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </p>
         </div>
 
-        {/* Date Filter selector */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
             <button
@@ -161,9 +155,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Invoiced */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Total Invoiced</span>
@@ -179,7 +171,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Collected Revenue */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Collected Revenue</span>
@@ -200,7 +191,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Total Expenses */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Total Expenses</span>
@@ -216,7 +206,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Net Operating Income */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Net Operating Income</span>
@@ -233,9 +222,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Secondary Financial Alerts Bar */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Outstanding Receivables Alert */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50/60 p-4 rounded-2xl border border-blue-200/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">
@@ -256,7 +243,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </button>
         </div>
 
-        {/* Overdue Alerts */}
         <div className="bg-gradient-to-r from-rose-50 to-orange-50/60 p-4 rounded-2xl border border-rose-200/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold">
@@ -278,9 +264,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Main Grid: Recent Invoices & Upcoming Due / Expenses */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Recent Invoices Table */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
@@ -374,9 +358,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Right Col: Upcoming Invoices & Recent Expenses */}
         <div className="space-y-6">
-          {/* Upcoming Due Invoices */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <h3 className="font-bold text-xs uppercase tracking-wider text-slate-500">Upcoming Due Invoices</h3>
@@ -408,7 +390,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
             )}
           </div>
 
-          {/* Recent Expenses Feed */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <h3 className="font-bold text-xs uppercase tracking-wider text-slate-500">Recent Expenses</h3>

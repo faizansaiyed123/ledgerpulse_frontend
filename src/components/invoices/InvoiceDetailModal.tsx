@@ -52,7 +52,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   const handleDownloadPDF = async () => {
     try {
       setIsGeneratingPdf(true);
-      // Ensure organization fallback object so PDF download never fails
       const orgFallback = currentOrg || {
         id: invoice.orgId,
         name: 'Apex Cloud Solutions Inc.',
@@ -61,7 +60,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
         createdBy: '',
         createdAt: '',
       };
-      await new Promise((resolve) => setTimeout(resolve, 200)); // slight pause for responsive UI feel
+      await new Promise((resolve) => setTimeout(resolve, 200)); 
       downloadInvoicePDF(invoice, orgFallback, customer);
       setPdfSuccessMessage(true);
       setTimeout(() => setPdfSuccessMessage(false), 3000);
@@ -89,7 +88,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-4xl w-full my-6 shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[95vh]">
-        {/* Modal Toolbar */}
         <div className="p-3 sm:p-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <span className="font-mono font-bold text-sm text-blue-400">{invoice.invoiceNumber}</span>
@@ -173,7 +171,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           </div>
         </div>
 
-        {/* PDF Download success alert */}
         {pdfSuccessMessage && (
           <div className="bg-emerald-50 text-emerald-800 text-xs px-4 py-2.5 flex items-center justify-between border-b border-emerald-200 animate-fade-in">
             <span className="flex items-center gap-1.5 font-medium">
@@ -184,7 +181,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           </div>
         )}
 
-        {/* Email sent notice banner */}
         {emailSentResult && (
           <div className="bg-indigo-50 text-indigo-900 text-xs px-4 py-2.5 flex items-center justify-between border-b border-indigo-200 animate-fade-in">
             <span className="flex items-center gap-1.5 font-medium">
@@ -195,9 +191,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           </div>
         )}
 
-        {/* Invoice Printable View */}
         <div className="p-6 sm:p-10 overflow-y-auto space-y-6 flex-1 bg-white font-sans text-xs">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start pb-6 border-b border-slate-200 gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">{currentOrg?.name}</h2>
@@ -216,7 +210,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Billed To */}
           <div className="py-2">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Billed To</p>
             <h4 className="text-sm font-bold text-slate-900">{invoice.customerName}</h4>
@@ -228,7 +221,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
             {customer?.taxId && <p className="text-slate-500 mt-0.5">Tax ID: {customer.taxId}</p>}
           </div>
 
-          {/* Items Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -252,9 +244,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
             </table>
           </div>
 
-          {/* Summary Breakdown with Multi-Currency Live FX Converter */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-slate-200 items-start">
-            {/* Multi-Currency Conversion Card */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-slate-800 text-[11px] flex items-center gap-1.5">
@@ -296,7 +286,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
               </div>
             </div>
 
-            {/* Official Summary Calculation Box */}
             <div className="space-y-2 sm:pl-6">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal:</span>
@@ -335,7 +324,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Payment History if any */}
           {relatedPayments.length > 0 && (
             <div className="mt-6 pt-4 border-t border-slate-200">
               <h5 className="font-bold text-slate-900 mb-2">Recorded Payments</h5>
@@ -354,7 +342,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
             </div>
           )}
 
-          {/* Notes and Terms Footer */}
           {(invoice.notes || invoice.terms) && (
             <div className="pt-6 border-t border-slate-200 space-y-2 text-[11px] text-slate-500">
               {invoice.notes && <p><strong>Notes:</strong> {invoice.notes}</p>}
@@ -363,7 +350,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           )}
         </div>
 
-        {/* Modal Bottom Action Bar */}
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
           <div className="text-xs text-slate-500">
             Invoice Status: <span className="font-bold text-slate-800 uppercase">{invoice.status.replace('_', ' ')}</span>
@@ -401,7 +387,6 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
         </div>
       </div>
 
-      {/* Template-Based Email Invoice Dialog */}
       <EmailInvoiceModal
         isOpen={emailModalOpen}
         onClose={() => setEmailModalOpen(false)}

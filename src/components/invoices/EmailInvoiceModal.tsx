@@ -55,12 +55,10 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
       const result = await sendInvoiceEmail(invoice, org, customer, customNote, recipientEmail);
       setSentResult(result);
 
-      // If invoice was in draft, transition it to 'sent'
       if (invoice.status === 'draft') {
         await updateInvoice(invoice.id, { status: 'sent' });
       }
 
-      // Add in-app notification
       addNotification({
         orgId: org.id,
         title: `Invoice ${invoice.invoiceNumber} Emailed`,
@@ -83,7 +81,6 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-xl w-full my-6 p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[92vh]">
-        {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
@@ -100,7 +97,6 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
         </div>
 
         {sentResult ? (
-          /* Success Screen */
           <div className="py-8 text-center space-y-4">
             <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle className="w-6 h-6" />
@@ -130,9 +126,7 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
             </div>
           </div>
         ) : (
-          /* Form Screen */
           <div className="mt-4 flex flex-col flex-1 overflow-hidden space-y-3.5 text-xs">
-            {/* View Switcher: Compose vs HTML Preview */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <div className="flex gap-1 bg-slate-100 p-0.5 rounded-lg">
                 <button

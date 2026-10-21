@@ -76,10 +76,8 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
-      {/* Top Navbar */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
               <FileText className="w-5 h-5" />
@@ -92,7 +90,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
             </div>
           </div>
 
-          {/* Nav Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
             <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
             <a href="#invoices" className="hover:text-blue-600 transition-colors">Invoicing</a>
@@ -102,7 +99,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
             <a href="#contact" className="hover:text-blue-600 transition-colors">Contact</a>
           </nav>
 
-          {/* Actions */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => onExploreDemo('owner')}
@@ -127,7 +123,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/60 via-slate-50 to-slate-50 pointer-events-none" />
         
@@ -169,7 +164,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
             <span>✓ Instant PDF generation</span>
           </p>
 
-          {/* Hero Mockup Preview Card */}
           <div className="mt-14 max-w-5xl mx-auto rounded-2xl bg-white p-3 sm:p-5 shadow-2xl border border-slate-200/80">
             <div className="rounded-xl bg-slate-900 p-4 sm:p-6 text-white text-left overflow-hidden">
               <div className="flex items-center justify-between pb-4 border-b border-slate-800">
@@ -186,7 +180,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
                 </div>
               </div>
 
-              {/* Sample Dashboard Preview stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700/60">
                   <p className="text-xs text-slate-400 font-medium">Total Invoiced</p>
@@ -216,7 +209,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Feature Pillars */}
       <section id="features" className="py-20 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -230,7 +222,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
           </div>
 
           <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-5">
                 <FileText className="w-6 h-6" />
@@ -241,7 +232,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </p>
             </div>
 
-            {/* Feature 2 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-5">
                 <Receipt className="w-6 h-6" />
@@ -252,7 +242,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </p>
             </div>
 
-            {/* Feature 3 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-5">
                 <Zap className="w-6 h-6" />
@@ -263,7 +252,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </p>
             </div>
 
-            {/* Feature 4 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-5">
                 <CreditCard className="w-6 h-6" />
@@ -274,7 +262,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </p>
             </div>
 
-            {/* Feature 5 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-5">
                 <PieChart className="w-6 h-6" />
@@ -285,7 +272,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </p>
             </div>
 
-            {/* Feature 6 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center mb-5">
                 <Users className="w-6 h-6" />
@@ -299,7 +285,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Invoicing Deep Dive */}
       <section id="invoices" className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -342,7 +327,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </div>
             </div>
 
-            {/* Visual Invoice Card */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200">
               <div className="flex justify-between items-start border-b border-slate-200 pb-5">
                 <div>
@@ -400,7 +384,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Expense Management Deep Dive */}
       <section id="expenses" className="py-20 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -476,7 +459,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -488,7 +470,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               Start with our 14-day free trial. Upgrade or cancel anytime with zero lock-in.
             </p>
 
-            {/* Monthly / Annual Toggle */}
             <div className="mt-8 inline-flex items-center p-1 rounded-xl bg-slate-200 border border-slate-300">
               <button
                 onClick={() => setBillingCycle('monthly')}
@@ -510,7 +491,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
           </div>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Starter */}
             <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-lg font-bold text-slate-900">Starter</h3>
               <p className="text-xs text-slate-500 mt-1">For freelancers & solo founders</p>
@@ -535,7 +515,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </button>
             </div>
 
-            {/* Growth - Featured */}
             <div className="bg-white rounded-2xl p-8 border-2 border-blue-600 shadow-xl relative">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-600 text-white text-xs font-bold uppercase rounded-full tracking-wider">
                 Most Popular
@@ -564,7 +543,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
               </button>
             </div>
 
-            {/* Enterprise */}
             <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-lg font-bold text-slate-900">Enterprise</h3>
               <p className="text-xs text-slate-500 mt-1">For multi-entity businesses</p>
@@ -592,7 +570,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* About & Trust Section */}
       <section id="about" className="py-20 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
@@ -625,7 +602,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -657,7 +633,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Contact Us Form */}
       <section id="contact" className="py-20 bg-white border-t border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
@@ -747,7 +722,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -802,7 +776,6 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onOpenAuth, onExpl
         </div>
       </footer>
 
-      {/* Legal Modals */}
       {showLegalModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto shadow-2xl">

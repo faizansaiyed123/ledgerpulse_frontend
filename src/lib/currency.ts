@@ -17,7 +17,6 @@ export const SUPPORTED_CURRENCIES: Record<string, CurrencyInfo> = {
   CHF: { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc', decimalPlaces: 2 },
 };
 
-// Standard FX exchange rates indexed to USD (1 USD = X target currency)
 export const FX_RATES_TO_USD: Record<string, number> = {
   USD: 1.0,
   EUR: 0.92,

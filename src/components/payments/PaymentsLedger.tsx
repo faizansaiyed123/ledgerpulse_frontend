@@ -65,7 +65,6 @@ export const PaymentsLedger: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Top Banner and Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Payment Reconciliation &amp; Ledger</h2>
@@ -93,7 +92,6 @@ export const PaymentsLedger: React.FC = () => {
         </div>
       </div>
 
-      {/* Batch Payment Success Alert */}
       {batchSuccessNotice && (
         <div className="bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs animate-fade-in">
           <div className="flex items-center gap-2">
@@ -113,7 +111,6 @@ export const PaymentsLedger: React.FC = () => {
         </div>
       )}
 
-      {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Received</span>
@@ -133,7 +130,6 @@ export const PaymentsLedger: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between text-xs">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -174,7 +170,6 @@ export const PaymentsLedger: React.FC = () => {
         </div>
       </div>
 
-      {/* Payments Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -223,7 +218,6 @@ export const PaymentsLedger: React.FC = () => {
         </div>
       </div>
 
-      {/* Batch Payment Processing Modal */}
       <BatchPaymentModal
         isOpen={batchModalOpen}
         onClose={() => setBatchModalOpen(false)}

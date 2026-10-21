@@ -38,7 +38,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
 
   const currency = currentOrg?.currency || 'USD';
 
-  // Category totals
   const categoryTotals = useMemo(() => {
     const totals: Record<string, number> = {};
     expenses.forEach((e) => {
@@ -86,7 +85,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Expense Management &amp; Receipts</h2>
@@ -113,7 +111,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         </div>
       </div>
 
-      {/* Category Sparkline Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {['software', 'office', 'travel', 'meals'].map((cat) => (
           <div
@@ -133,7 +130,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         ))}
       </div>
 
-      {/* Filters and Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between text-xs">
         <div className="relative w-full md:w-72">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -147,7 +143,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          {/* Category Dropdown */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -165,7 +160,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
             <option value="other">Other</option>
           </select>
 
-          {/* Status Filter */}
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
             {['all', 'approved', 'pending', 'rejected'].map((st) => (
               <button
@@ -180,7 +174,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
             ))}
           </div>
 
-          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
@@ -194,7 +187,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         </div>
       </div>
 
-      {/* Expenses Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -318,7 +310,6 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         </div>
       </div>
 
-      {/* Receipt Lightbox Modal */}
       {activeReceiptUrl && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-xl w-full p-4 shadow-2xl relative">

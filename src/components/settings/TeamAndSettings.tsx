@@ -33,7 +33,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
 
   const [activeTab, setActiveTab] = useState<'team' | 'settings' | 'audit'>(initialTab);
 
-  // Business profile form
   const [name, setName] = useState(currentOrg?.name || '');
   const [taxId, setTaxId] = useState(currentOrg?.taxId || '');
   const [currency, setCurrency] = useState(currentOrg?.currency || 'USD');
@@ -50,7 +49,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
   const [error, setError] = useState('');
   const [invitationUrl, setInvitationUrl] = useState('');
 
-  // Invite member form
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteName, setInviteName] = useState('');
@@ -106,7 +104,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
 
   return (
     <div className="space-y-4">
-      {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Organization &amp; Team Settings</h2>
@@ -141,7 +138,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
         </div>
       )}
 
-      {/* Tabs Switcher */}
       <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex gap-1 text-xs">
         <button
           onClick={() => setActiveTab('team')}
@@ -172,7 +168,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
         </button>
       </div>
 
-      {/* Team View */}
       {activeTab === 'team' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -233,7 +228,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
             </div>
           </div>
 
-          {/* Role Permissions Matrix */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
             <h3 className="font-bold text-sm text-slate-900">Role-Based Access Control (RBAC) Matrix</h3>
             <div className="overflow-x-auto">
@@ -297,7 +291,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
         </div>
       )}
 
-      {/* Business Profile Settings View */}
       {activeTab === 'settings' && (
         <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6 text-xs">
           {saveSavedNotice && (
@@ -447,7 +440,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
         </form>
       )}
 
-      {/* Activity Audit Log View */}
       {activeTab === 'audit' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -479,7 +471,6 @@ export const TeamAndSettings: React.FC<{ initialTab?: 'team' | 'settings' }> = (
         </div>
       )}
 
-      {/* Invite Member Modal */}
       {inviteModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">

@@ -17,7 +17,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
 }) => {
   const { currentOrg, customers, invoices, addInvoice, updateInvoice, addCustomer } = useOrg();
 
-  // Basic Details
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [customerId, setCustomerId] = useState('');
   const [issueDate, setIssueDate] = useState('');
@@ -26,12 +25,10 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
   const [notes, setNotes] = useState('');
   const [terms, setTerms] = useState('');
 
-  // Line items
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [discountPercent, setDiscountPercent] = useState<number>(0);
   const [taxPercent, setTaxPercent] = useState<number>(5);
 
-  // New Customer inline modal
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [newCustName, setNewCustName] = useState('');
   const [newCustEmail, setNewCustEmail] = useState('');
@@ -86,7 +83,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Add Item
   const handleAddItem = () => {
     setItems((prev) => [
       ...prev,
@@ -100,13 +96,11 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
     ]);
   };
 
-  // Remove Item
   const handleRemoveItem = (id: string) => {
     if (items.length <= 1) return;
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  // Update item row
   const handleUpdateItem = (id: string, field: keyof InvoiceItem, value: any) => {
     setItems((prev) =>
       prev.map((it) => {
@@ -124,14 +118,12 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
     );
   };
 
-  // Calculations
   const subtotal = items.reduce((sum, it) => sum + (it.amount || 0), 0);
   const discountAmount = (subtotal * (discountPercent || 0)) / 100;
   const taxableBase = Math.max(0, subtotal - discountAmount);
   const taxAmount = (taxableBase * (taxPercent || 0)) / 100;
   const totalAmount = taxableBase + taxAmount;
 
-  // Save Invoice
   const handleSave = async (status: 'draft' | 'sent') => {
     setError('');
     const selectedCustomer = customers.find((c) => c.id === customerId);
@@ -195,7 +187,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
     }
   };
 
-  // Quick Customer Creation
   const handleCreateCustomer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCustName) return;
@@ -219,7 +210,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-4xl w-full my-6 shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
-        {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center">
@@ -240,10 +230,8 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
           </button>
         </div>
 
-        {/* Scrollable Form Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-xs">
           {error && <div className="p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800">{error}</div>}
-          {/* Top Row: Invoice #, Customer, Dates, Currency */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Invoice Number</label>
@@ -303,7 +291,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             </div>
           </div>
 
-          {/* Inline Add Customer Drawer if opened */}
           {showAddCustomer && (
             <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 space-y-3 animate-fade-in">
               <div className="flex justify-between items-center">
@@ -351,7 +338,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             </div>
           )}
 
-          {/* Line Items Table */}
           <div className="space-y-2">
             <div className="flex justify-between items-center pb-1 border-b border-slate-200">
               <h4 className="font-bold text-sm text-slate-800">Itemized Charges</h4>
@@ -426,9 +412,7 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             </div>
           </div>
 
-          {/* Financial Summary & Taxes Bottom Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200">
-            {/* Notes & Terms */}
             <div className="space-y-3">
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">Notes to Customer</label>
@@ -452,7 +436,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
               </div>
             </div>
 
-            {/* Calculations Box */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal</span>
@@ -499,7 +482,6 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
           </div>
         </div>
 
-        {/* Modal Actions */}
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2 shrink-0">
           <button
             type="button"

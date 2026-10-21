@@ -94,7 +94,6 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Invoice Management</h2>
@@ -123,9 +122,7 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between text-xs">
-        {/* Search */}
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
@@ -137,7 +134,6 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
           />
         </div>
 
-        {/* Status Filters */}
         <div className="flex flex-wrap items-center gap-1 w-full md:w-auto">
           {['all', 'draft', 'sent', 'partially_paid', 'paid', 'overdue'].map((st) => (
             <button
@@ -152,7 +148,6 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
           ))}
         </div>
 
-        {/* Sort */}
         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
           <span className="text-slate-400 font-medium">Sort:</span>
           <select
@@ -168,7 +163,6 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
         </div>
       </div>
 
-      {/* Invoices Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">

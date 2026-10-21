@@ -280,8 +280,6 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     void bootstrap();
     return () => { cancelled = true; };
-    // demoStorageKey is derived only from the authenticated UID.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.uid, isDemo]);
 
   const updateDemo = (updater: (data: DemoData) => DemoData) => {

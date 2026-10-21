@@ -29,7 +29,6 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
   const [receiptName, setReceiptName] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Quick Add Vendor
   const [showAddVendor, setShowAddVendor] = useState(false);
   const [newVendorName, setNewVendorName] = useState('');
   const [error, setError] = useState('');
@@ -66,7 +65,6 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Handle simulated receipt file upload
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -313,7 +311,6 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
             </label>
           </div>
 
-          {/* Receipt Upload / Attachment */}
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
             <label className="block font-semibold text-slate-700 mb-1">Receipt Attachment</label>
             <div className="flex items-center gap-3">

@@ -17,12 +17,10 @@ export function generateInvoicePDF(
   const margin = 18;
   let y = margin;
 
-  // Header Background Accent bar (Navy/Slate gradient aesthetic)
-  doc.setFillColor(30, 41, 59); // slate-800
+  doc.setFillColor(30, 41, 59); 
   doc.rect(0, 0, pageWidth, 6, 'F');
 
-  // Company Brand Box with Initials
-  doc.setFillColor(37, 99, 235); // blue-600
+  doc.setFillColor(37, 99, 235); 
   doc.roundedRect(margin, y + 2, 10, 10, 2, 2, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
@@ -30,23 +28,20 @@ export function generateInvoicePDF(
   const orgInitials = (organization.name || 'LP').slice(0, 2).toUpperCase();
   doc.text(orgInitials, margin + 5, y + 8.5, { align: 'center' });
 
-  // Company Legal Name
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.setTextColor(15, 23, 42); // slate-900
+  doc.setTextColor(15, 23, 42); 
   doc.text(organization.name || 'Company Name', margin + 14, y + 9);
 
-  // INVOICE title right-aligned
   doc.setFontSize(22);
-  doc.setTextColor(37, 99, 235); // blue-600
+  doc.setTextColor(37, 99, 235); 
   doc.text('INVOICE', pageWidth - margin, y + 9, { align: 'right' });
 
   y += 18;
 
-  // Company details left
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.setTextColor(100, 116, 139); // slate-500
+  doc.setTextColor(100, 116, 139); 
   if (organization.taxId) {
     doc.text(`Tax ID / VAT: ${organization.taxId}`, margin, y);
     y += 4.5;
@@ -64,7 +59,6 @@ export function generateInvoicePDF(
     y += 4.5;
   }
 
-  // Invoice Meta Box right
   const metaBoxX = pageWidth - margin - 65;
   let metaY = margin + 18;
   doc.setFontSize(8.5);
@@ -99,24 +93,22 @@ export function generateInvoicePDF(
   doc.setFont('helvetica', 'bold');
   const statusUpper = invoice.status.toUpperCase().replace('_', ' ');
   if (invoice.status === 'paid') {
-    doc.setTextColor(16, 185, 129); // green
+    doc.setTextColor(16, 185, 129); 
   } else if (invoice.status === 'overdue') {
-    doc.setTextColor(239, 68, 68); // red
+    doc.setTextColor(239, 68, 68); 
   } else if (invoice.status === 'partially_paid') {
-    doc.setTextColor(37, 99, 235); // blue
+    doc.setTextColor(37, 99, 235); 
   } else {
-    doc.setTextColor(100, 116, 139); // slate
+    doc.setTextColor(100, 116, 139); 
   }
   doc.text(statusUpper, pageWidth - margin, metaY, { align: 'right' });
 
   y = Math.max(y, metaY) + 8;
 
-  // Divider line
   doc.setDrawColor(226, 232, 240);
   doc.line(margin, y, pageWidth - margin, y);
   y += 7;
 
-  // Bill To Section
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(100, 116, 139);
@@ -151,14 +143,13 @@ export function generateInvoicePDF(
 
   y += 6;
 
-  // Line Items Table Header
   const colDesc = margin + 2;
   const colQty = margin + 92;
   const colUnit = margin + 116;
   const colTax = margin + 140;
   const colTotal = pageWidth - margin - 2;
 
-  doc.setFillColor(241, 245, 249); // slate-100
+  doc.setFillColor(241, 245, 249); 
   doc.roundedRect(margin, y, pageWidth - (margin * 2), 7, 1, 1, 'F');
 
   doc.setFont('helvetica', 'bold');
@@ -172,13 +163,11 @@ export function generateInvoicePDF(
 
   y += 9;
 
-  // Line items
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   doc.setTextColor(30, 41, 59);
 
   invoice.items.forEach((item, index) => {
-    // Check if new page is needed
     if (y > pageHeight - 75) {
       doc.addPage();
       y = margin;
@@ -199,18 +188,15 @@ export function generateInvoicePDF(
     y += 7;
   });
 
-  // Table bottom border
   doc.setDrawColor(226, 232, 240);
   doc.line(margin, y, pageWidth - margin, y);
   y += 6;
 
-  // Calculation summary box right-aligned
   const summaryBoxX = pageWidth - margin - 75;
   const summaryValX = pageWidth - margin;
 
   doc.setFontSize(8.5);
 
-  // Subtotal
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 116, 139);
   doc.text('Subtotal:', summaryBoxX, y);
@@ -218,7 +204,6 @@ export function generateInvoicePDF(
   doc.text(formatCurrency(invoice.subtotal, invoice.currency), summaryValX, y, { align: 'right' });
   y += 5.5;
 
-  // Discount if any
   if (invoice.discountAmount > 0) {
     doc.setTextColor(100, 116, 139);
     doc.text(`Discount (${invoice.discountPercent}%):`, summaryBoxX, y);
@@ -227,7 +212,6 @@ export function generateInvoicePDF(
     y += 5.5;
   }
 
-  // Tax
   if (invoice.taxAmount > 0) {
     doc.setTextColor(100, 116, 139);
     doc.text(`Tax (${invoice.taxPercent}%):`, summaryBoxX, y);
@@ -236,7 +220,6 @@ export function generateInvoicePDF(
     y += 5.5;
   }
 
-  // Total
   doc.setFillColor(241, 245, 249);
   doc.roundedRect(summaryBoxX - 4, y - 3.5, 80, 9, 1, 1, 'F');
   doc.setFont('helvetica', 'bold');
@@ -246,7 +229,6 @@ export function generateInvoicePDF(
   doc.text(formatCurrency(invoice.totalAmount, invoice.currency), summaryValX, y + 2.5, { align: 'right' });
   y += 11;
 
-  // Paid amount & Balance Due
   if (invoice.paidAmount > 0) {
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
@@ -262,7 +244,6 @@ export function generateInvoicePDF(
   doc.text('Balance Due:', summaryBoxX, y);
   doc.text(formatCurrency(invoice.balanceDue, invoice.currency), summaryValX, y, { align: 'right' });
 
-  // Payment Instructions & Remittance Box left
   const bottomY = Math.max(y + 12, pageHeight - 50);
 
   doc.setFillColor(248, 250, 252);
@@ -286,7 +267,6 @@ export function generateInvoicePDF(
     doc.text(notesText, margin + 3, bottomY + 13, { maxWidth: 94 });
   }
 
-  // Authorized Signature line right
   const sigX = pageWidth - margin - 60;
   doc.setDrawColor(148, 163, 184);
   doc.line(sigX, bottomY + 20, pageWidth - margin, bottomY + 20);
@@ -294,7 +274,6 @@ export function generateInvoicePDF(
   doc.setTextColor(148, 163, 184);
   doc.text('Authorized Signature & Date', sigX + 8, bottomY + 24);
 
-  // Footer branding and page indicator
   doc.setFontSize(7.5);
   doc.setTextColor(148, 163, 184);
   doc.text('Generated with LedgerPulse SaaS Platform • Page 1 of 1', pageWidth / 2, pageHeight - 8, { align: 'center' });

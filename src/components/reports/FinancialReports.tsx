@@ -24,7 +24,6 @@ export const FinancialReports: React.FC = () => {
 
   const currency = currentOrg?.currency || 'USD';
 
-  // Calculations for P&L
   const pnlData = useMemo(() => {
     const totalInvoiced = invoices.reduce((s, i) => (i.status !== 'cancelled' ? s + i.totalAmount : s), 0);
     const collectedRevenue = invoices.reduce((s, i) => (i.status !== 'cancelled' ? s + (i.paidAmount || 0) : s), 0);
@@ -32,7 +31,6 @@ export const FinancialReports: React.FC = () => {
     const netIncome = collectedRevenue - totalExpenses;
     const profitMargin = collectedRevenue > 0 ? (netIncome / collectedRevenue) * 100 : 0;
 
-    // Expense breakdown by category
     const categoryBreakdown: Record<string, number> = {};
     expenses.forEach((e) => {
       if (e.status !== 'rejected') {
@@ -50,7 +48,6 @@ export const FinancialReports: React.FC = () => {
     };
   }, [invoices, expenses]);
 
-  // Calculations for Customer Revenue
   const customerRevenue = useMemo(() => {
     return customers.map((c) => {
       const custInvoices = invoices.filter((i) => i.customerId === c.id && i.status !== 'cancelled');
@@ -69,7 +66,6 @@ export const FinancialReports: React.FC = () => {
     }).sort((a, b) => b.invoiced - a.invoiced);
   }, [customers, invoices]);
 
-  // Calculations for Aging Receivables
   const agingData = useMemo(() => {
     const today = new Date();
     let current = 0;
@@ -103,7 +99,6 @@ export const FinancialReports: React.FC = () => {
     };
   }, [invoices]);
 
-  // Calculations for Tax Report
   const taxData = useMemo(() => {
     const salesTaxCollected = invoices.reduce((s, i) => (i.status !== 'cancelled' ? s + (i.taxAmount || 0) : s), 0);
     const purchaseTaxPaid = expenses.reduce((s, e) => (e.status !== 'rejected' ? s + (e.taxAmount || 0) : s), 0);
@@ -115,7 +110,6 @@ export const FinancialReports: React.FC = () => {
     };
   }, [invoices, expenses]);
 
-  // Export current active report to CSV
   const handleExportCSV = () => {
     const orgName = currentOrg?.name || 'Workspace';
     const date = new Date().toISOString().split('T')[0];
@@ -161,7 +155,6 @@ export const FinancialReports: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Top Banner and Export */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Financial Reports &amp; Intelligence</h2>
@@ -177,7 +170,6 @@ export const FinancialReports: React.FC = () => {
         </button>
       </div>
 
-      {/* Report Switcher Tabs */}
       <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-1 text-xs">
         <button
           onClick={() => setActiveReport('pnl')}
@@ -213,7 +205,6 @@ export const FinancialReports: React.FC = () => {
         </button>
       </div>
 
-      {/* P&L View */}
       {activeReport === 'pnl' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -242,7 +233,6 @@ export const FinancialReports: React.FC = () => {
             </div>
           </div>
 
-          {/* Category Breakdown Table */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
             <h3 className="font-bold text-sm text-slate-900">Expenses by Category</h3>
             <div className="overflow-x-auto">
@@ -272,7 +262,6 @@ export const FinancialReports: React.FC = () => {
         </div>
       )}
 
-      {/* Customer Revenue View */}
       {activeReport === 'revenue_customer' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
@@ -304,7 +293,6 @@ export const FinancialReports: React.FC = () => {
         </div>
       )}
 
-      {/* Accounts Receivable Aging View */}
       {activeReport === 'aging' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -336,7 +324,6 @@ export const FinancialReports: React.FC = () => {
         </div>
       )}
 
-      {/* Tax Report View */}
       {activeReport === 'tax' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <h3 className="font-bold text-base text-slate-900">Tax Liability Summary</h3>
