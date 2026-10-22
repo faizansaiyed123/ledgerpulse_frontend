@@ -42,10 +42,16 @@ async function request<T>(path: string, options: RequestInit = {}, authenticated
   if (!headers.has('Content-Type') && options.body) headers.set('Content-Type', 'application/json');
 
   if (authenticated) {
-    const user = auth.currentUser;
-    if (!user) throw new ApiError('Authentication is required.', 401);
-    const token = await user.getIdToken();
-    headers.set('Authorization', `Bearer ${token}`);
+    if (import.meta.env.VITE_E2E_TEST_MODE === 'true') {
+      headers.set('X-Test-User-Id', import.meta.env.VITE_E2E_TEST_USER_ID || 'test-user');
+      headers.set('X-Test-User-Email', import.meta.env.VITE_E2E_TEST_USER_EMAIL || 'test-user@example.test');
+      headers.set('X-Test-User-Name', import.meta.env.VITE_E2E_TEST_USER_NAME || 'LedgerPulse E2E Owner');
+    } else {
+      const user = auth.currentUser;
+      if (!user) throw new ApiError('Authentication is required.', 401);
+      const token = await user.getIdToken();
+      headers.set('Authorization', `Bearer ${token}`);
+    }
   }
 
   const response = await fetch(`${API_BASE}${path}`, {
