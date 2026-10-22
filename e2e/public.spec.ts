@@ -14,7 +14,7 @@ test.describe('public website and demo experience', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Financial Clarity');
     await expect(page.getByText('Custom Invoice Builder')).toBeVisible();
     await expect(page.getByText('Smart Expense Tracking')).toBeVisible();
-    await expect(page.getByText('Recurring Automation')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Recurring Automation' })).toBeVisible();
     await expect(page.getByText('Financial Reports & Exports')).toBeVisible();
 
     await page.screenshot({ path: 'test-results/visuals/01-public-landing.png', fullPage: true });
