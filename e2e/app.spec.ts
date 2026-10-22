@@ -57,7 +57,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.locator('aside').getByRole('button', { name: /^Invoices/ }).click();
     await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('INV-2026-003');
-    await expect(page.getByText('INV-2026-003')).toBeVisible();
+    await expect(page.getByText('INV-2026-003', { exact: true }).last()).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('');
     await page.getByRole('button', { name: 'overdue', exact: true }).click();
     await expect(page.locator('tr').filter({ hasText: /INV-\d{4}-003/ })).toBeVisible();
