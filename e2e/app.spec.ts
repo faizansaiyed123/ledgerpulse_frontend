@@ -58,7 +58,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('INV-2026-003');
     await expect(page.getByText('INV-2026-003')).toBeVisible();
-    await page.getByRole('button', { name: 'Overdue', exact: true }).click();
+    await page.getByRole('button', { name: 'overdue', exact: true }).click();
     await expect(page.getByText('INV-2026-004')).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('');
     const invoiceCsv = page.waitForEvent('download');
