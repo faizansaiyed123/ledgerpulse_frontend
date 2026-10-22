@@ -83,6 +83,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const e2eMode = import.meta.env.VITE_E2E_TEST_MODE === 'true';
+    if (e2eMode) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('e2e-auth') === '1') {
+        setIsDemo(false);
+        setCurrentUser({
+          uid: import.meta.env.VITE_E2E_TEST_USER_ID || 'test-user',
+          email: import.meta.env.VITE_E2E_TEST_USER_EMAIL || 'test-user@example.test',
+          displayName: import.meta.env.VITE_E2E_TEST_USER_NAME || 'LedgerPulse E2E Owner',
+          createdAt: new Date().toISOString(),
+        });
+      } else {
+        setIsDemo(false);
+        setCurrentUser(null);
+      }
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsDemo(false);
