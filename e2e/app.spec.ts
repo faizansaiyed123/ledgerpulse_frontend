@@ -234,14 +234,11 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await workspaceModal.getByPlaceholder('Acme Holdings Ltd.').fill('LedgerPulse E2E Secondary Workspace');
     await workspaceModal.locator('select').selectOption('INR');
     await workspaceModal.getByRole('button', { name: 'Create Workspace' }).click();
-    await expect(page.getByText('LedgerPulse E2E Secondary Workspace')).toBeVisible();
+    await expect(page.locator('aside').getByText('LedgerPulse E2E Secondary Workspace')).toBeVisible();
 
     await page.locator('aside').getByRole('button').first().click();
-    await page.getByRole('button', { name: originalWorkspaceName }).click().catch(() => {});
-    if (await page.getByText('LedgerPulse E2E Secondary Workspace').count()) {
-      await page.locator('aside').getByRole('button').first().click();
-      await page.getByRole('button', { name: /test-user@example.test|LedgerPulse E2E Owner/ }).count().catch(() => 0);
-    }
+    await page.locator('aside').locator('div.absolute').getByRole('button', { name: originalWorkspaceName, exact: true }).click();
+    await expect(page.locator('aside').getByText(originalWorkspaceName)).toBeVisible();
 
     await page.getByRole('button', { name: 'Reports & P&L' }).click();
     await expect(page.getByRole('heading', { name: 'Financial Reports & Intelligence' })).toBeVisible();
