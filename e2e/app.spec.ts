@@ -26,7 +26,7 @@ async function capture(page: Page, name: string) {
   await page.screenshot({ path: `test-results/visuals/${name}.png`, fullPage: true });
 }
 
-test.describe.serial('LedgerPulse integrated browser journeys', () => {
+test.describe('LedgerPulse integrated browser journeys', () => {
   test('bootstrap, load real backend seed data and render dashboard', async ({ page }) => {
     const ctx = await api();
     const orgId = await currentOrgId(ctx);
@@ -151,7 +151,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByRole('heading', { name: 'Payment Reconciliation & Ledger' })).toBeVisible();
     await page.getByPlaceholder('Search by reference, customer, invoice #...').fill('WIRE-001');
     await expect(page.getByText('WIRE-001')).toBeVisible();
-    await page.getByRole('combobox').selectOption('bank_transfer');
+    await page.getByRole('combobox').first().selectOption('bank_transfer');
     const paymentCsv = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Export Payments CSV' }).click();
     expect((await paymentCsv).suggestedFilename()).toMatch(/Payments_.*\.csv$/);
