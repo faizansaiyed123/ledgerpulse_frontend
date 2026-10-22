@@ -163,7 +163,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await page.locator('aside').getByRole('button', { name: /^Expenses/ }).click();
     await expect(page.getByRole('heading', { name: 'Expense Management' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Add Expense' }).click();
+    await page.getByRole('main').getByRole('button', { name: 'Add Expense', exact: true }).click();
     const modal = page.locator('div.fixed.inset-0').last();
     await modal.getByPlaceholder('e.g. AWS Cloud ECS Clusters & S3').fill('E2E cloud tooling');
     const expenseNumbers = modal.locator('input[type="number"]');
@@ -201,7 +201,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByPlaceholder('Starlight Media Group Inc.').fill('E2E Customer Ltd');
     await modal.getByPlaceholder('billing@customer.com').fill('e2e-customer@example.test');
     await modal.getByRole('button', { name: /Save Customer|Create Customer/ }).click();
-    await expect(page.getByText('E2E Customer')).toBeVisible();
+    await expect(page.getByText('E2E Customer', { exact: true })).toBeVisible();
 
     await page.locator('aside').getByRole('button', { name: /^Vendors/ }).click();
     await expect(page.getByText('Amazon Web Services')).toBeVisible();
@@ -246,7 +246,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('combobox').nth(1).selectOption('monthly');
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
-    await modal.locator('input[placeholder*="Service"]').fill('E2E recurring service');
+    await modal.getByText('Service / Line Item Description', { exact: true }).locator('..').getByRole('textbox').fill('E2E recurring service');
     await modal.getByRole('button', { name: 'Create Schedule' }).click();
     await expect(page.getByText('E2E recurring service')).toBeVisible();
 
@@ -257,7 +257,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
   test('reports, team settings, notifications and platform admin render with real data', async ({ page }) => {
     await openApp(page);
 
-    const originalWorkspaceName = (await page.locator('aside').getByRole('button').first().innerText()).split('\n')[0];
+    const originalWorkspaceName = await page.locator('aside').getByRole('button').first().locator('p').first().innerText();
     await page.locator('aside').getByRole('button').first().click();
     await page.getByRole('button', { name: 'New Workspace' }).click();
     await expect(page.getByRole('heading', { name: 'Create New Workspace' })).toBeVisible();
