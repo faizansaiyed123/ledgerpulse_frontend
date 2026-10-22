@@ -99,6 +99,44 @@ jobs:
         if: failure()
         run: cat /tmp/ledgerpulse-backend.log || true
 
+      - name: Generate curated visual walkthrough metadata
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          visuals = sorted(Path("test-results/visuals").glob("*.png"))
+          Path("test-results/visuals/manifest.json").write_text(json.dumps([
+              {"section":"LedgerPulse E2E","step":i+1,"title":p.stem.replace("-", " ").title(),"filename":str(p.relative_to("test-results")).replace("\\","/"),"viewport":"1280 × 720"}
+              for i,p in enumerate(visuals)
+          ], indent=2))
+          lines = [
+              "# LedgerPulse — End-to-End Visual Walkthrough",
+              "",
+              "> Curated screenshots are captured only after their corresponding browser assertions pass. Failure screenshots and traces remain in CI artifacts.",
+              "",
+              "**Browser:** Chromium controlled by Playwright  ",
+              "**Viewport:** 1280 × 720  ",
+              "**Backend:** Flask API using disposable SQLite in CI  ",
+              "**Authentication:** isolated CI test identity; no production Firebase credentials are used",
+              "",
+              "## Coverage",
+              "",
+              "Public website, pricing/FAQ/legal, contact failure handling, interactive demo and role switching, authenticated dashboard bootstrap, sample-data loading, invoices, payments, expenses, customers, vendors, recurring billing, reports, team management, organization settings, notifications, platform administration, tenant isolation, authorization failures, financial validation and API error handling.",
+              "",
+              "## Evidence",
+              ""
+          ]
+          for p in visuals:
+              rel = str(p.relative_to("test-results")).replace("\\","/")
+              lines.extend([f"![{p.stem}]({rel})",""])
+          lines.extend([
+              "## Verification note",
+              "",
+              "Each published image is emitted only after its workflow checkpoint passes. API assertions independently verify persistence, authorization, tenant ownership and validation behavior."
+          ])
+          Path("test-results/VISUAL-TEST-WALKTHROUGH.md").write_text("\n".join(lines)+"\n")
+          PY
+
       - name: Upload browser evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -139,6 +177,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No visual evidence changes."
           else
-            git commit -m "Publish LedgerPulse E2E visual evidence"
+            git commit -m "Publish LedgerPulse E2E visual evidence [skip ci]"
             git push origin HEAD:main
           fi
