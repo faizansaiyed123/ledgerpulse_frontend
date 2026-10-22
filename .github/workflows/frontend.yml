@@ -159,7 +159,7 @@ jobs:
           cp test-results/visuals/*.png docs/testing/visuals/
           cp test-results/VISUAL-TEST-WALKTHROUGH.md docs/testing/VISUAL-TEST-WALKTHROUGH.md
           cp test-results/visuals/manifest.json docs/testing/visuals/manifest.json
-          cat > docs/testing/README.md <<'EOF'
+          cat > docs/testing/README.md <<EOF
           # LedgerPulse E2E Test Evidence
 
           This folder contains CI-generated browser evidence from the full LedgerPulse frontend/backend end-to-end suite.
