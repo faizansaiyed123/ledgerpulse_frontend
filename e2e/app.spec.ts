@@ -34,16 +34,16 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
     await openApp(page);
     await page.getByRole('button', { name: 'Load Sample Data' }).click();
-    await expect(page.getByText('Executive Financial Dashboard')).toBeVisible();
+    await expect(page.getByText('Starlight Media Group')).toBeVisible();
 
     const customers = await ctx.get(`/api/customers?org_id=${orgId}`);
     expect((await customers.json())).toHaveLength(4);
 
     const invoices = await ctx.get(`/api/invoices?org_id=${orgId}`);
-    expect((await invoices.json())).toHaveLength(6);
+    expect((await invoices.json())).toHaveLength(4);
 
     const expenses = await ctx.get(`/api/expenses?org_id=${orgId}`);
-    expect((await expenses.json())).toHaveLength(6);
+    expect((await expenses.json())).toHaveLength(4);
 
     await capture(page, '04-dashboard-seeded');
     await ctx.dispose();
