@@ -207,7 +207,10 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     const pendingRow = page.locator('tr').filter({ hasText: 'E2E pending approval' }).first();
     await expect(pendingRow).toBeVisible();
     await pendingRow.getByTitle('Approve').click();
-    await expect(pendingRow.getByText('approved', { exact: true })).toBeVisible();
+    await expect(pendingRow).toHaveCount(0);
+    await page.getByRole('button', { name: 'approved', exact: true }).click();
+    const approvedPendingRow = page.locator('tr').filter({ hasText: 'E2E pending approval' }).first();
+    await expect(approvedPendingRow.getByText('approved', { exact: true })).toBeVisible();
 
     page.once('dialog', dialog => dialog.accept());
     await updatedRow.getByTitle('Delete').click();
@@ -252,6 +255,8 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     page.once('dialog', dialog => dialog.accept());
     await customerRow.getByTitle('Delete Customer').click();
 
+    await page.locator('aside').getByRole('button', { name: /^Vendors/ }).click();
+    await expect(page.getByRole('heading', { name: 'Clients & Vendors Directory' })).toBeVisible();
     const vendorRow = page.locator('tr').filter({ hasText: 'E2E Vendor' }).first();
     await vendorRow.getByTitle('Edit Vendor').click();
     modal = page.locator('div.fixed.inset-0').last();
