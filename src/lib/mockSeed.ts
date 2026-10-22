@@ -43,9 +43,9 @@ export function getSampleSeedData(orgId: string, userId: string, userEmail: stri
     {
       id: `${orgId}_owner`,
       orgId,
-      userId,
-      userEmail,
-      userName: userEmail.split('@')[0],
+      userId: 'demo_user_owner',
+      userEmail: 'alex.founder@apexcloud.io',
+      userName: 'Alex Morgan',
       role: 'owner',
       joinedAt: formatDate(-90),
     },
