@@ -180,12 +180,40 @@ test.describe('LedgerPulse integrated browser journeys', () => {
 
     await expect(page.getByText('E2E cloud tooling updated')).toBeVisible();
     const updatedRow = page.locator('tr').filter({ hasText: 'E2E cloud tooling updated' }).first();
-    await updatedRow.getByTitle('Approve').click();
-    await expect(page.getByText('E2E cloud tooling updated')).toBeVisible();
+    await expect(updatedRow.getByText('approved', { exact: true })).toBeVisible();
+
+    const expenseCtx = await api();
+    const expenseOrgId = await currentOrgId(expenseCtx);
+    const pendingExpenseResponse = await expenseCtx.post('/api/expenses', {
+      data: {
+        orgId: expenseOrgId,
+        description: 'E2E pending approval',
+        category: 'software',
+        amount: 50,
+        taxAmount: 0,
+        currency: 'USD',
+        paymentMethod: 'credit_card',
+        isReimbursable: false,
+        status: 'pending',
+      },
+    });
+    expect(pendingExpenseResponse.status()).toBe(201);
+    await expenseCtx.dispose();
+
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Expense Management' })).toBeVisible();
+    await page.getByRole('button', { name: 'pending', exact: true }).click();
+    const pendingRow = page.locator('tr').filter({ hasText: 'E2E pending approval' }).first();
+    await expect(pendingRow).toBeVisible();
+    await pendingRow.getByTitle('Approve').click();
+    await expect(pendingRow.getByText('approved', { exact: true })).toBeVisible();
 
     page.once('dialog', dialog => dialog.accept());
     await updatedRow.getByTitle('Delete').click();
     await expect(page.getByText('E2E cloud tooling updated')).toHaveCount(0);
+    page.once('dialog', dialog => dialog.accept());
+    await pendingRow.getByTitle('Delete').click();
+    await expect(page.getByText('E2E pending approval')).toHaveCount(0);
 
     await capture(page, '08-expense-lifecycle');
   });
@@ -204,7 +232,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByText('E2E Customer', { exact: true })).toBeVisible();
 
     await page.locator('aside').getByRole('button', { name: /^Vendors/ }).click();
-    await expect(page.getByText('Amazon Web Services')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Clients & Vendors Directory' })).toBeVisible();
     await page.getByRole('button', { name: /Add Vendor/ }).click();
     modal = page.locator('div.fixed.inset-0').last();
     await modal.getByPlaceholder('Amazon Web Services').fill('E2E Vendor');
@@ -246,11 +274,26 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('combobox').nth(1).selectOption('monthly');
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
+    const recurringRowCountBefore = await page.locator('tbody tr').count();
+    const recurringCreateResponse = page.waitForResponse(response =>
+      response.request().method() === 'POST' && response.url().endsWith('/api/recurring')
+    );
     await modal.getByText('Service / Line Item Description', { exact: true }).locator('..').getByRole('textbox').fill('E2E recurring service');
     await modal.getByRole('button', { name: 'Create Schedule' }).click();
-    await expect(page.getByText('E2E recurring service')).toBeVisible();
+    const createdRecurring = await (await recurringCreateResponse).json();
+    expect(createdRecurring.templateInvoiceNumber).toBeTruthy();
+    await expect(page.locator('tbody tr')).toHaveCount(recurringRowCountBefore + 1);
+    const recurringRow = page.locator('tbody tr').filter({ hasText: 'Starlight Media Group' }).last();
+    await expect(recurringRow).toContainText('monthly');
+    await expect(recurringRow).toContainText('250');
 
+    const recurringRunResponse = page.waitForResponse(response =>
+      response.request().method() === 'POST' && response.url().endsWith('/api/recurring/run')
+    );
     await page.getByRole('button', { name: 'Run Scheduled Batch Now' }).click();
+    const recurringRun = await (await recurringRunResponse).json();
+    expect(recurringRun.count).toBeGreaterThan(0);
+    await expect(page.getByText(/Automated background worker executed: Generated|Checked all recurring schedules/)).toBeVisible();
     await capture(page, '10-recurring-billing');
   });
 
@@ -291,7 +334,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByText(/Invitation|e2e-invitee@example.test|invitation/i).last()).toBeVisible();
 
     await page.getByRole('button', { name: 'Business Profile & Invoicing' }).click();
-    const companyName = page.getByLabel(/Company Legal Name/);
+    const companyName = page.getByText('Company Legal Name *', { exact: true }).locator('..').getByRole('textbox');
     await companyName.fill('LedgerPulse E2E Holdings');
     await page.getByRole('button', { name: 'Save Business Settings' }).click();
     await expect(page.getByText('Settings saved successfully')).toBeVisible();
