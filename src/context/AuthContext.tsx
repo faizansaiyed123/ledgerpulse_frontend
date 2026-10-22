@@ -85,6 +85,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const e2eMode = import.meta.env.VITE_E2E_TEST_MODE === 'true';
     if (e2eMode) {
+      if (isDemo) {
+        setLoading(false);
+        return;
+      }
       const params = new URLSearchParams(window.location.search);
       if (params.get('e2e-auth') === '1') {
         setIsDemo(false);
