@@ -64,6 +64,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     const invoiceCsv = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Export CSV' }).click();
     expect((await invoiceCsv).suggestedFilename()).toMatch(/Invoices_.*\.csv$/);
+    await page.getByRole('button', { name: 'all', exact: true }).click();
     await capture(page, '05-invoices-list');
 
     await page.getByRole('button', { name: 'New Invoice' }).click();
