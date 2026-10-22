@@ -98,7 +98,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
   test('payment flow updates invoice balance and ledger', async ({ page }) => {
     await openApp(page);
-    await page.getByRole('button', { name: 'Invoices' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Invoices/ }).click();
     const row = page.locator('tr').filter({ hasText: 'INV-2026-003' }).first();
     await expect(row).toBeVisible();
     await row.getByTitle('View Invoice').click();
@@ -122,14 +122,14 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     expect(paymentRows.some((item: { amount: number }) => item.amount === 500)).toBeTruthy();
     await paymentCtx.dispose();
 
-    await page.getByRole('button', { name: 'Payments' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Payments/ }).click();
     await expect(page.getByRole('heading', { name: 'Payment Reconciliation & Ledger' })).toBeVisible();
     await capture(page, '07-payment-ledger');
   });
 
   test('expense lifecycle creates, edits, approves and deletes a real backend expense', async ({ page }) => {
     await openApp(page);
-    await page.getByRole('button', { name: 'Expenses' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Expenses/ }).click();
     await expect(page.getByRole('heading', { name: 'Expense Management' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Add Expense' }).click();
@@ -161,7 +161,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
   test('customer and vendor directory supports create, update and delete', async ({ page }) => {
     await openApp(page);
-    await page.getByRole('button', { name: 'Customers' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Customers/ }).click();
     await expect(page.getByRole('heading', { name: 'Clients & Vendors Directory' })).toBeVisible();
 
     await page.getByRole('button', { name: /Add Customer/ }).click();
@@ -172,7 +172,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('button', { name: /Save Customer|Create Customer/ }).click();
     await expect(page.getByText('E2E Customer')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Vendors' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Vendors/ }).click();
     await expect(page.getByText('Amazon Web Services')).toBeVisible();
     await page.getByRole('button', { name: /Add Vendor/ }).click();
     modal = page.locator('div.fixed.inset-0').last();
@@ -206,7 +206,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
   test('recurring billing creates a schedule and executes due generation', async ({ page }) => {
     await openApp(page);
-    await page.getByRole('button', { name: 'Recurring Billing' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Recurring Billing/ }).click();
     await expect(page.getByRole('heading', { name: 'Recurring Invoices & Automation' })).toBeVisible();
     await page.getByRole('button', { name: /Create Recurring|New Recurring/ }).click();
 
@@ -240,7 +240,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.locator('aside').locator('div.absolute').getByRole('button', { name: originalWorkspaceName, exact: true }).click();
     await expect(page.locator('aside').getByText(originalWorkspaceName)).toBeVisible();
 
-    await page.getByRole('button', { name: 'Reports & P&L' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Reports & P&L/ }).click();
     await expect(page.getByRole('heading', { name: 'Financial Reports & Intelligence' })).toBeVisible();
     await expect(page.getByText('Expenses by Category')).toBeVisible();
     await capture(page, '11-financial-reports');
