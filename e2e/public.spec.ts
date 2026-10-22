@@ -50,10 +50,10 @@ test.describe('public website and demo experience', () => {
     await expect(page.getByRole('main').getByText('Apex Cloud Solutions Inc.', { exact: true })).toBeVisible();
     await page.screenshot({ path: 'test-results/visuals/03-demo-dashboard.png' });
 
-    const roleSwitcher = page.getByRole('button', { name: /owner/i }).first();
+    const roleSwitcher = page.getByRole('button', { name: /^owner$/i }).last();
     await expect(roleSwitcher).toBeVisible();
     await roleSwitcher.click();
-    await page.getByRole('button', { name: /Accountant/ }).click();
+    await page.getByRole('button', { name: /Accountant/ }).last().click();
     await expect(page.getByRole('button', { name: /Accountant/ }).first()).toBeVisible();
 
     await expect(errors).toEqual([]);
