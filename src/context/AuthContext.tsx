@@ -81,6 +81,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isDemoRef = React.useRef(false);
+
+  useEffect(() => {
+    isDemoRef.current = isDemo;
+  }, [isDemo]);
 
   useEffect(() => {
     const e2eMode = import.meta.env.VITE_E2E_TEST_MODE === 'true';
@@ -109,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (user) {
         setIsDemo(false);
         setCurrentUser(profileFromFirebaseUser(user));
-      } else if (!isDemo) {
+      } else if (!isDemoRef.current) {
         setCurrentUser(null);
       }
       setLoading(false);
@@ -159,13 +164,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInAsDemo = (role: 'owner' | 'accountant' | 'staff' = 'owner') => {
     setError(null);
-    void fbSignOut(auth).catch(() => undefined);
+    isDemoRef.current = true;
     setIsDemo(true);
     setCurrentUser(DEMO_USERS[role]);
+    void fbSignOut(auth).catch(() => undefined);
   };
 
   const signOut = async () => {
     setError(null);
+    isDemoRef.current = false;
     try {
       await fbSignOut(auth);
     } finally {
