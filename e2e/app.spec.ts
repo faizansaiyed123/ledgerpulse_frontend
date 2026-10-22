@@ -98,11 +98,13 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByRole('heading', { name: /Edit Invoice: INV-E2E-001/ })).toBeVisible();
     await page.getByRole('button', { name: 'Cancel' }).last().click();
 
+    const invoiceRowCountBeforeDuplicate = await page.locator('tbody tr').count();
     await row.getByTitle('Duplicate').click();
-    await expect(page.locator('tr').filter({ hasText: /INV-E2E-001/ })).toHaveCount(2);
+    await expect(page.locator('tbody tr')).toHaveCount(invoiceRowCountBeforeDuplicate + 1);
+    await expect(page.locator('tbody tr').filter({ hasText: 'INV-E2E-001' })).toHaveCount(1);
 
     page.once('dialog', dialog => dialog.accept());
-    await page.locator('tr').filter({ hasText: 'INV-E2E-001' }).last().getByTitle('Delete').click();
+    await page.locator('tbody tr').filter({ hasText: 'INV-E2E-001' }).last().getByTitle('Delete').click();
     await expect(page.locator('tr').filter({ hasText: 'INV-E2E-001' })).toHaveCount(1);
 
     await capture(page, '06-invoice-management-success');
