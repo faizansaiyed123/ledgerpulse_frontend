@@ -299,9 +299,13 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     const otherOrg = (await boot.json()).organizations[0].id;
     expect((await ctx.get(`/api/customers?org_id=${otherOrg}`)).status()).toBe(403);
 
+    const invoiceRows = await (await ctx.get(`/api/invoices?org_id=${orgId}`)).json();
+    const targetInvoiceId = invoiceRows[0]?.id;
+    expect(targetInvoiceId).toBeTruthy();
+
     const over = await ctx.post('/api/payments', {
       data: {
-        invoiceId: 'inv_103',
+        invoiceId: targetInvoiceId,
         amount: 999999,
         paymentMethod: 'bank_transfer',
         paymentDate: new Date().toISOString().slice(0, 10),
