@@ -116,7 +116,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     const row = page.locator('tr').filter({ hasText: 'INV-2026-003' }).first();
     await expect(row).toBeVisible();
     await row.getByTitle('View Invoice').click();
-    await expect(page.getByText('INV-2026-003')).toBeVisible();
+    await expect(page.getByText('INV-2026-003', { exact: true }).first()).toBeVisible();
 
     const paymentButton = page.getByRole('button', { name: /Record Payment/ }).first();
     await expect(paymentButton).toBeVisible();
