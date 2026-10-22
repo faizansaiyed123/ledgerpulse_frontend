@@ -58,7 +58,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: 'New Invoice' }).click();
     await expect(page.getByRole('heading', { name: 'Create New Invoice' })).toBeVisible();
 
-    const modal = page.getByRole('heading', { name: 'Create New Invoice' }).locator('..').locator('..');
+    const modal = page.locator('div.fixed.inset-0').last();
     const invoiceNumber = modal.locator('input').first();
     await invoiceNumber.fill('INV-E2E-001');
 
@@ -87,10 +87,11 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: 'Cancel' }).last().click();
 
     await row.getByTitle('Duplicate').click();
-    await expect(page.getByText(/duplicated/i)).toBeVisible();
+    await expect(page.locator('tr').filter({ hasText: /INV-E2E-001/ })).toHaveCount(2);
 
-    await page.locator('tr').filter({ hasText: /INV-E2E-001/ }).last().getByTitle('Delete').click();
-    await expect(page.getByText(/INV-E2E-001/)).toBeVisible();
+    page.once('dialog', dialog => dialog.accept());
+    await page.locator('tr').filter({ hasText: 'INV-E2E-001' }).last().getByTitle('Delete').click();
+    await expect(page.locator('tr').filter({ hasText: 'INV-E2E-001' })).toHaveCount(1);
 
     await capture(page, '06-invoice-management-success');
   });
@@ -113,7 +114,13 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await amountInput.fill('500');
     await dialog.getByRole('button', { name: /Record Payment/ }).last().click();
 
-    await expect(page.getByText(/Payment recorded|Payment Recorded|successfully/i).last()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
+    const paymentCtx = await api();
+    const orgId = await currentOrgId(paymentCtx);
+    const payments = await paymentCtx.get(`/api/payments?org_id=${orgId}&invoice_id=inv_103`);
+    const paymentRows = await payments.json();
+    expect(paymentRows.some((item: { amount: number }) => item.amount === 500)).toBeTruthy();
+    await paymentCtx.dispose();
 
     await page.getByRole('button', { name: 'Payments' }).click();
     await expect(page.getByRole('heading', { name: 'Payment Reconciliation & Ledger' })).toBeVisible();
@@ -128,8 +135,9 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: 'Add Expense' }).click();
     const modal = page.locator('div.fixed.inset-0').last();
     await modal.getByPlaceholder('e.g. AWS Cloud ECS Clusters & S3').fill('E2E cloud tooling');
-    await modal.getByLabel(/Total Amount/).fill('125.50');
-    await modal.getByLabel(/Tax Amount Included/).fill('5.50');
+    const expenseNumbers = modal.locator('input[type="number"]');
+    await expenseNumbers.nth(0).fill('125.50');
+    await expenseNumbers.nth(1).fill('5.50');
     await modal.getByRole('button', { name: 'Record Expense' }).click();
 
     await expect(page.getByText('E2E cloud tooling')).toBeVisible();
@@ -141,9 +149,10 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
     await expect(page.getByText('E2E cloud tooling updated')).toBeVisible();
     const updatedRow = page.locator('tr').filter({ hasText: 'E2E cloud tooling updated' }).first();
-    await updatedRow.getByRole('button', { name: /Approve|Mark Approved/ }).click().catch(() => {});
+    await updatedRow.getByTitle('Approve').click();
     await expect(page.getByText('E2E cloud tooling updated')).toBeVisible();
 
+    page.once('dialog', dialog => dialog.accept());
     await updatedRow.getByTitle('Delete').click();
     await expect(page.getByText('E2E cloud tooling updated')).toHaveCount(0);
 
@@ -171,9 +180,26 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('button', { name: /Save Vendor|Create Vendor/ }).click();
     await expect(page.getByText('E2E Vendor')).toBeVisible();
 
+    const customerRow = page.locator('tr').filter({ hasText: 'E2E Customer' }).first();
+    await customerRow.getByTitle('Edit Customer').click();
+    modal = page.locator('div.fixed.inset-0').last();
+    await modal.getByPlaceholder('Jane Smith').fill('E2E Customer Updated');
+    await modal.getByRole('button', { name: 'Save Customer' }).click();
+    await expect(page.getByText('E2E Customer Updated')).toBeVisible();
+
+    page.once('dialog', dialog => dialog.accept());
+    await customerRow.getByTitle('Delete Customer').click();
+
     const vendorRow = page.locator('tr').filter({ hasText: 'E2E Vendor' }).first();
-    await vendorRow.getByTitle('Edit').click().catch(() => {});
-    await page.getByRole('button', { name: /Delete/ }).last().click().catch(() => {});
+    await vendorRow.getByTitle('Edit Vendor').click();
+    modal = page.locator('div.fixed.inset-0').last();
+    await modal.getByPlaceholder('Amazon Web Services').fill('E2E Vendor Updated');
+    await modal.getByRole('button', { name: 'Save Vendor' }).click();
+    await expect(page.getByText('E2E Vendor Updated')).toBeVisible();
+    const updatedVendorRow = page.locator('tr').filter({ hasText: 'E2E Vendor Updated' }).first();
+    page.once('dialog', dialog => dialog.accept());
+    await updatedVendorRow.getByTitle('Delete Vendor').click();
+    await expect(page.getByText('E2E Vendor Updated')).toHaveCount(0);
 
     await capture(page, '09-contacts-directory');
   });
@@ -190,10 +216,10 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
     await modal.locator('input[placeholder*="Service"]').fill('E2E recurring service');
-    await modal.getByRole('button', { name: /Create Schedule|Save/ }).click();
+    await modal.getByRole('button', { name: 'Create Schedule' }).click();
     await expect(page.getByText('E2E recurring service')).toBeVisible();
 
-    await page.getByRole('button', { name: /Run|Process/i }).first().click().catch(() => {});
+    await page.getByRole('button', { name: 'Run Scheduled Batch Now' }).click();
     await capture(page, '10-recurring-billing');
   });
 
@@ -219,12 +245,8 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: 'Business Profile & Invoicing' }).click();
     const companyName = page.getByLabel(/Company Legal Name/);
     await companyName.fill('LedgerPulse E2E Holdings');
-    await page.getByRole('button', { name: /Save Changes|Save Settings|Save/ }).last().click().catch(() => {});
-    await expect(page.getByText('LedgerPulse E2E Holdings')).toBeVisible();
-
-    const bell = page.locator('button').filter({ has: page.locator('svg') }).nth(1);
-    await bell.click().catch(() => {});
-    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: 'Save Business Settings' }).click();
+    await expect(page.getByText('Settings saved successfully')).toBeVisible();
 
     await page.getByRole('button', { name: 'Platform Admin' }).click();
     await expect(page.getByRole('heading', { name: /Platform Operations & Multi-Tenant Control/ })).toBeVisible();
@@ -238,7 +260,9 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     const orgId = await currentOrgId(ctx);
 
     expect((await ctx.get('/api/does-not-exist')).status()).toBe(404);
-    expect((await pwRequest.newContext({ baseURL: 'http://127.0.0.1:5000' })).get('/api/auth/me')).toBeTruthy();
+    const anon = await pwRequest.newContext({ baseURL: 'http://127.0.0.1:5000' });
+    expect((await anon.get('/api/auth/me')).status()).toBe(401);
+    await anon.dispose();
 
     const second = await pwRequest.newContext({
       baseURL: 'http://127.0.0.1:5000',
