@@ -198,6 +198,10 @@ export const api = {
     return request<Vendor[]>(`/vendors?org_id=${encodeURIComponent(orgId)}`);
   },
 
+  async getVendor(id: string) {
+    return request<Vendor>(`/vendors/${encodeURIComponent(id)}`);
+  },
+
   async createVendor(vendor: Omit<Vendor, 'id' | 'orgId' | 'createdAt' | 'totalExpenses'> & { orgId: string }) {
     return request<Vendor>('/vendors', json('POST', vendor));
   },
