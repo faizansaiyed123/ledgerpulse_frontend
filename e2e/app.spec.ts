@@ -140,7 +140,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     const paymentCtx = await api();
     const orgId = await currentOrgId(paymentCtx);
     const paymentInvoices = await (await paymentCtx.get(`/api/invoices?org_id=${orgId}`)).json();
-    const paymentTarget = paymentInvoices.find((item: { invoiceNumber: string }) => /^INV-\\d{4}-003$/.test(item.invoiceNumber));
+    const paymentTarget = paymentInvoices.find((item: { invoiceNumber: string }) => /^INV-\d{4}-003$/.test(item.invoiceNumber));
     expect(paymentTarget?.id).toBeTruthy();
     const payments = await paymentCtx.get(`/api/payments?org_id=${orgId}&invoice_id=${paymentTarget.id}`);
     const paymentRows = await payments.json();
