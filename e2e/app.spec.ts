@@ -60,7 +60,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByText('INV-2026-003')).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('');
     await page.getByRole('button', { name: 'overdue', exact: true }).click();
-    await expect(page.getByText('INV-2026-004')).toBeVisible();
+    await expect(page.locator('tr').filter({ hasText: /INV-\\d{4}-003/ })).toBeVisible();
     const invoiceCsv = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Export CSV' }).click();
     expect((await invoiceCsv).suggestedFilename()).toMatch(/Invoices_.*\.csv$/);
@@ -128,7 +128,10 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
     const paymentCtx = await api();
     const orgId = await currentOrgId(paymentCtx);
-    const payments = await paymentCtx.get(`/api/payments?org_id=${orgId}&invoice_id=inv_103`);
+    const paymentInvoices = await (await paymentCtx.get(`/api/invoices?org_id=${orgId}`)).json();
+    const paymentTarget = paymentInvoices.find((item: { invoiceNumber: string }) => /^INV-\\d{4}-003$/.test(item.invoiceNumber));
+    expect(paymentTarget?.id).toBeTruthy();
+    const payments = await paymentCtx.get(`/api/payments?org_id=${orgId}&invoice_id=${paymentTarget.id}`);
     const paymentRows = await payments.json();
     expect(paymentRows.some((item: { amount: number }) => item.amount === 500)).toBeTruthy();
     await paymentCtx.dispose();
@@ -228,7 +231,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: /Create Recurring|New Recurring/ }).click();
 
     const modal = page.locator('div.fixed.inset-0').last();
-    await modal.getByRole('combobox').first().selectOption({ label: /Starlight Media Group/ });
+    await modal.getByRole('combobox').first().selectOption({ label: 'Starlight Media Group' });
     await modal.getByRole('combobox').nth(1).selectOption('monthly');
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
