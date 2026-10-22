@@ -201,6 +201,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await expenseCtx.dispose();
 
     await page.reload();
+    await page.locator('aside').getByRole('button', { name: /^Expenses/ }).click();
     await expect(page.getByRole('heading', { name: 'Expense Management' })).toBeVisible();
     await page.getByRole('button', { name: 'pending', exact: true }).click();
     const pendingRow = page.locator('tr').filter({ hasText: 'E2E pending approval' }).first();
@@ -239,6 +240,8 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('button', { name: /Save Vendor|Create Vendor/ }).click();
     await expect(page.getByText('E2E Vendor')).toBeVisible();
 
+    await page.locator('aside').getByRole('button', { name: /^Customers/ }).click();
+    await expect(page.getByRole('heading', { name: 'Clients & Vendors Directory' })).toBeVisible();
     const customerRow = page.locator('tr').filter({ hasText: 'E2E Customer' }).first();
     await customerRow.getByTitle('Edit Customer').click();
     modal = page.locator('div.fixed.inset-0').last();
@@ -274,7 +277,6 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('combobox').nth(1).selectOption('monthly');
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
-    const recurringRowCountBefore = await page.locator('tbody tr').count();
     const recurringCreateResponse = page.waitForResponse(response =>
       response.request().method() === 'POST' && response.url().endsWith('/api/recurring')
     );
@@ -282,8 +284,12 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     await modal.getByRole('button', { name: 'Create Schedule' }).click();
     const createdRecurring = await (await recurringCreateResponse).json();
     expect(createdRecurring.templateInvoiceNumber).toBeTruthy();
-    await expect(page.locator('tbody tr')).toHaveCount(recurringRowCountBefore + 1);
-    const recurringRow = page.locator('tbody tr').filter({ hasText: 'Starlight Media Group' }).last();
+
+    await page.reload();
+    await page.locator('aside').getByRole('button', { name: /^Recurring Billing/ }).click();
+    await expect(page.getByRole('heading', { name: 'Recurring Invoices & Automation' })).toBeVisible();
+    const recurringRow = page.locator('tbody tr').filter({ hasText: createdRecurring.templateInvoiceNumber }).first();
+    await expect(recurringRow).toBeVisible();
     await expect(recurringRow).toContainText('monthly');
     await expect(recurringRow).toContainText('250');
 
@@ -337,7 +343,7 @@ test.describe('LedgerPulse integrated browser journeys', () => {
     const companyName = page.getByText('Company Legal Name *', { exact: true }).locator('..').getByRole('textbox');
     await companyName.fill('LedgerPulse E2E Holdings');
     await page.getByRole('button', { name: 'Save Business Settings' }).click();
-    await expect(page.getByText('Settings saved successfully')).toBeVisible();
+    await expect(page.getByText('Business Profile and Invoicing preferences saved successfully!', { exact: true })).toBeVisible();
 
     const bell = page.locator('button:has(svg.lucide-bell)').first();
     await bell.click();
