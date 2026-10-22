@@ -46,6 +46,9 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     expect((await expenses.json())).toHaveLength(4);
 
     await capture(page, '04-dashboard-seeded');
+    for (const filter of ['This Month', 'Last Month', 'Quarter', 'Year', 'All Time']) {
+      await page.getByRole('button', { name: filter, exact: true }).click();
+    }
     await ctx.dispose();
   });
 
@@ -53,6 +56,14 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await openApp(page);
     await page.locator('aside').getByRole('button', { name: /^Invoices/ }).click();
     await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
+    await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('INV-2026-003');
+    await expect(page.getByText('INV-2026-003')).toBeVisible();
+    await page.getByRole('button', { name: 'Overdue', exact: true }).click();
+    await expect(page.getByText('INV-2026-004')).toBeVisible();
+    await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('');
+    const invoiceCsv = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export CSV' }).click();
+    expect((await invoiceCsv).suggestedFilename()).toMatch(/Invoices_.*\.csv$/);
     await capture(page, '05-invoices-list');
 
     await page.getByRole('button', { name: 'New Invoice' }).click();
@@ -124,6 +135,12 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
     await page.locator('aside').getByRole('button', { name: /^Payments/ }).click();
     await expect(page.getByRole('heading', { name: 'Payment Reconciliation & Ledger' })).toBeVisible();
+    await page.getByPlaceholder('Search by reference, customer, invoice #...').fill('WIRE-001');
+    await expect(page.getByText('WIRE-001')).toBeVisible();
+    await page.getByRole('combobox').selectOption('bank_transfer');
+    const paymentCsv = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export Payments CSV' }).click();
+    expect((await paymentCsv).suggestedFilename()).toMatch(/Payments_.*\.csv$/);
     await capture(page, '07-payment-ledger');
   });
 
@@ -243,6 +260,9 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.locator('aside').getByRole('button', { name: /^Reports & P&L/ }).click();
     await expect(page.getByRole('heading', { name: 'Financial Reports & Intelligence' })).toBeVisible();
     await expect(page.getByText('Expenses by Category')).toBeVisible();
+    const reportCsv = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export Report to CSV' }).click();
+    expect((await reportCsv).suggestedFilename()).toMatch(/PnL_Report_.*\.csv$/);
     await capture(page, '11-financial-reports');
 
     await page.getByRole('button', { name: /Team & Roles/ }).click();
