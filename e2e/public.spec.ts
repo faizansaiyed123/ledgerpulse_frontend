@@ -47,7 +47,7 @@ test.describe('public website and demo experience', () => {
 
     await page.getByRole('button', { name: 'Launch Interactive Demo' }).click();
     await expect(page.getByRole('heading', { name: 'Executive Financial Dashboard' })).toBeVisible();
-    await expect(page.getByText('Apex Cloud Solutions Inc.')).toBeVisible();
+    await expect(page.getByRole('main').getByText('Apex Cloud Solutions Inc.', { exact: true })).toBeVisible();
     await page.screenshot({ path: 'test-results/visuals/03-demo-dashboard.png' });
 
     const roleSwitcher = page.getByRole('button', { name: /owner/i }).first();
