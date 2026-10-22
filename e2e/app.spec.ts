@@ -99,12 +99,20 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: 'Cancel' }).last().click();
 
     const invoiceRowCountBeforeDuplicate = await page.locator('tbody tr').count();
+    const duplicateResponse = page.waitForResponse(response =>
+      response.request().method() === 'POST' && response.url().includes('/api/invoices/') && response.url().endsWith('/duplicate')
+    );
     await row.getByTitle('Duplicate').click();
+    const duplicatedInvoice = await (await duplicateResponse).json();
+    const duplicateNumber = duplicatedInvoice.invoiceNumber as string;
+
     await expect(page.locator('tbody tr')).toHaveCount(invoiceRowCountBeforeDuplicate + 1);
     await expect(page.locator('tbody tr').filter({ hasText: 'INV-E2E-001' })).toHaveCount(1);
+    await expect(page.locator('tbody tr').filter({ hasText: duplicateNumber })).toHaveCount(1);
 
+    const duplicateRow = page.locator('tbody tr').filter({ hasText: duplicateNumber }).first();
     page.once('dialog', dialog => dialog.accept());
-    await page.locator('tbody tr').filter({ hasText: 'INV-E2E-001' }).last().getByTitle('Delete').click();
+    await duplicateRow.getByTitle('Delete').click();
     await expect(page.locator('tr').filter({ hasText: 'INV-E2E-001' })).toHaveCount(1);
 
     await capture(page, '06-invoice-management-success');
