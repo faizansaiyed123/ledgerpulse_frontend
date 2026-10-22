@@ -51,7 +51,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
 
   test('invoice management creates, edits, finalizes, duplicates, downloads PDF and deletes a draft', async ({ page }) => {
     await openApp(page);
-    await page.getByRole('button', { name: 'Invoices' }).click();
+    await page.locator('aside').getByRole('button', { name: /^Invoices/ }).click();
     await expect(page.getByRole('heading', { name: 'Invoice Management' })).toBeVisible();
     await capture(page, '05-invoices-list');
 
