@@ -226,6 +226,23 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
   test('reports, team settings, notifications and platform admin render with real data', async ({ page }) => {
     await openApp(page);
 
+    const originalWorkspaceName = (await page.locator('aside').getByRole('button').first().innerText()).split('\n')[0];
+    await page.locator('aside').getByRole('button').first().click();
+    await page.getByRole('button', { name: 'New Workspace' }).click();
+    await expect(page.getByRole('heading', { name: 'Create New Workspace' })).toBeVisible();
+    const workspaceModal = page.locator('div.fixed.inset-0').last();
+    await workspaceModal.getByPlaceholder('Acme Holdings Ltd.').fill('LedgerPulse E2E Secondary Workspace');
+    await workspaceModal.locator('select').selectOption('INR');
+    await workspaceModal.getByRole('button', { name: 'Create Workspace' }).click();
+    await expect(page.getByText('LedgerPulse E2E Secondary Workspace')).toBeVisible();
+
+    await page.locator('aside').getByRole('button').first().click();
+    await page.getByRole('button', { name: originalWorkspaceName }).click().catch(() => {});
+    if (await page.getByText('LedgerPulse E2E Secondary Workspace').count()) {
+      await page.locator('aside').getByRole('button').first().click();
+      await page.getByRole('button', { name: /test-user@example.test|LedgerPulse E2E Owner/ }).count().catch(() => 0);
+    }
+
     await page.getByRole('button', { name: 'Reports & P&L' }).click();
     await expect(page.getByRole('heading', { name: 'Financial Reports & Intelligence' })).toBeVisible();
     await expect(page.getByText('Expenses by Category')).toBeVisible();
@@ -247,6 +264,14 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await companyName.fill('LedgerPulse E2E Holdings');
     await page.getByRole('button', { name: 'Save Business Settings' }).click();
     await expect(page.getByText('Settings saved successfully')).toBeVisible();
+
+    const bell = page.locator('button:has(svg.lucide-bell)').first();
+    await bell.click();
+    await expect(page.getByRole('heading', { name: 'Notifications' })).toBeVisible();
+    if (await page.getByRole('button', { name: 'Mark all read' }).count()) {
+      await page.getByRole('button', { name: 'Mark all read' }).click();
+    }
+    await page.keyboard.press('Escape');
 
     await page.getByRole('button', { name: 'Platform Admin' }).click();
     await expect(page.getByRole('heading', { name: /Platform Operations & Multi-Tenant Control/ })).toBeVisible();
