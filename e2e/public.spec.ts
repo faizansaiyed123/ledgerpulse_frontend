@@ -53,8 +53,8 @@ test.describe('public website and demo experience', () => {
     const roleSwitcher = page.getByRole('button', { name: /^owner$/i }).last();
     await expect(roleSwitcher).toBeVisible();
     await roleSwitcher.click();
-    await page.getByRole('button', { name: /Accountant/ }).last().click();
-    await expect(page.getByRole('button').filter({ hasText: 'accountant' }).first()).toBeVisible();
+    await page.getByText('📊 Accountant', { exact: true }).click();
+    await expect(page.locator('header').getByRole('button').filter({ hasText: 'accountant' }).first()).toBeVisible();
 
     await expect(errors).toEqual([]);
   });
