@@ -231,7 +231,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await page.getByRole('button', { name: /Create Recurring|New Recurring/ }).click();
 
     const modal = page.locator('div.fixed.inset-0').last();
-    await modal.getByRole('combobox').first().selectOption({ label: 'Starlight Media Group' });
+    await modal.getByRole('combobox').first().selectOption({ label: 'Starlight Media Group (Starlight Media Inc.)' });
     await modal.getByRole('combobox').nth(1).selectOption('monthly');
     await modal.locator('input[type="number"]').first().fill('250');
     await modal.locator('input[type="date"]').first().fill(new Date().toISOString().slice(0,10));
