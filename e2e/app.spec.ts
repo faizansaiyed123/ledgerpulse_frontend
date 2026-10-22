@@ -60,7 +60,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await expect(page.getByText('INV-2026-003')).toBeVisible();
     await page.getByPlaceholder('Search by invoice #, customer name, email...').fill('');
     await page.getByRole('button', { name: 'overdue', exact: true }).click();
-    await expect(page.locator('tr').filter({ hasText: /INV-\\d{4}-003/ })).toBeVisible();
+    await expect(page.locator('tr').filter({ hasText: /INV-\d{4}-003/ })).toBeVisible();
     const invoiceCsv = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Export CSV' }).click();
     expect((await invoiceCsv).suggestedFilename()).toMatch(/Invoices_.*\.csv$/);
