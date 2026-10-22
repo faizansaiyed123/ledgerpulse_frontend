@@ -63,7 +63,7 @@ test.describe.serial('LedgerPulse integrated browser journeys', () => {
     await invoiceNumber.fill('INV-E2E-001');
 
     const selects = modal.locator('select');
-    await selects.first().selectOption({ label: /Starlight Media Group/ });
+    await selects.first().selectOption({ label: 'Starlight Media Group' });
 
     await modal.getByPlaceholder('Service or product description...').fill('End-to-end implementation service');
     const numberInputs = modal.locator('input[type="number"]');
