@@ -1,8 +1,17 @@
 node_modules/
 dist/
+build/
 .env
 .env.local
 .env.*
 !.env.example
 coverage/
+playwright-report/
+test-results/
+__pycache__/
+.pytest_cache/
+logs/
+*.log
+storage/
+uploads/
 .DS_Store

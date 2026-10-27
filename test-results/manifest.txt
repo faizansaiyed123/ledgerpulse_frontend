@@ -1,1 +1,0 @@
-CI output is generated at runtime; curated evidence is published to docs/testing/visuals.
