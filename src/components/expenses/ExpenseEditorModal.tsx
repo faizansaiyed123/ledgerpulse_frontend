@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Receipt, Upload, X, DollarSign, Calendar, Tag, Check, Image as ImageIcon } from 'lucide-react';
-import { useOrg } from '../../context/OrgContext.tsx';
-import { Expense, ExpenseCategory, PaymentMethod } from '../../types/index.ts';
+import React, { useState, useEffect } from "react";
+import {
+  Receipt,
+  Upload,
+  X,
+  DollarSign,
+  Calendar,
+  Tag,
+  Check,
+  Image as ImageIcon,
+} from "lucide-react";
+import { useOrg } from "../../context/OrgContext.tsx";
+import { Expense, ExpenseCategory, PaymentMethod } from "../../types/index.ts";
 
 interface ExpenseEditorModalProps {
   isOpen: boolean;
@@ -14,29 +23,33 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
   onClose,
   expenseToEdit,
 }) => {
-  const { currentOrg, vendors, addExpense, updateExpense, addVendor } = useOrg();
+  const { currentOrg, vendors, addExpense, updateExpense, addVendor } =
+    useOrg();
 
-  const [description, setDescription] = useState('');
-  const [vendorId, setVendorId] = useState('');
-  const [category, setCategory] = useState<ExpenseCategory>('software');
-  const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split('T')[0]);
+  const [description, setDescription] = useState("");
+  const [vendorId, setVendorId] = useState("");
+  const [category, setCategory] = useState<ExpenseCategory>("software");
+  const [expenseDate, setExpenseDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
   const [amount, setAmount] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
-  const [currency, setCurrency] = useState('USD');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
+  const [currency, setCurrency] = useState("USD");
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("credit_card");
   const [isReimbursable, setIsReimbursable] = useState(false);
-  const [receiptUrl, setReceiptUrl] = useState('');
-  const [receiptName, setReceiptName] = useState('');
-  const [notes, setNotes] = useState('');
+  const [receiptUrl, setReceiptUrl] = useState("");
+  const [receiptName, setReceiptName] = useState("");
+  const [notes, setNotes] = useState("");
 
   const [showAddVendor, setShowAddVendor] = useState(false);
-  const [newVendorName, setNewVendorName] = useState('');
-  const [error, setError] = useState('');
+  const [newVendorName, setNewVendorName] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (expenseToEdit) {
       setDescription(expenseToEdit.description);
-      setVendorId(expenseToEdit.vendorId || '');
+      setVendorId(expenseToEdit.vendorId || "");
       setCategory(expenseToEdit.category);
       setExpenseDate(expenseToEdit.expenseDate);
       setAmount(expenseToEdit.amount);
@@ -44,22 +57,22 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
       setCurrency(expenseToEdit.currency);
       setPaymentMethod(expenseToEdit.paymentMethod);
       setIsReimbursable(expenseToEdit.isReimbursable);
-      setReceiptUrl(expenseToEdit.receiptUrl || '');
-      setReceiptName(expenseToEdit.receiptName || '');
-      setNotes(expenseToEdit.notes || '');
+      setReceiptUrl(expenseToEdit.receiptUrl || "");
+      setReceiptName(expenseToEdit.receiptName || "");
+      setNotes(expenseToEdit.notes || "");
     } else {
-      setDescription('');
-      setVendorId(vendors[0]?.id || '');
-      setCategory('software');
-      setExpenseDate(new Date().toISOString().split('T')[0]);
+      setDescription("");
+      setVendorId(vendors[0]?.id || "");
+      setCategory("software");
+      setExpenseDate(new Date().toISOString().split("T")[0]);
       setAmount(0);
       setTaxAmount(0);
-      setCurrency(currentOrg?.currency || 'USD');
-      setPaymentMethod('credit_card');
+      setCurrency(currentOrg?.currency || "USD");
+      setPaymentMethod("credit_card");
       setIsReimbursable(false);
-      setReceiptUrl('');
-      setReceiptName('');
-      setNotes('');
+      setReceiptUrl("");
+      setReceiptName("");
+      setNotes("");
     }
   }, [expenseToEdit, vendors, currentOrg, isOpen]);
 
@@ -70,11 +83,11 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
     if (file) {
       const maxBytes = 1_500_000;
       if (file.size > maxBytes) {
-        setError('Receipt files must be 1.5 MB or smaller.');
-        e.currentTarget.value = '';
+        setError("Receipt files must be 1.5 MB or smaller.");
+        e.currentTarget.value = "";
         return;
       }
-      setError('');
+      setError("");
       setReceiptName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -86,9 +99,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     if (!description || amount <= 0) {
-      setError('Enter a description and an amount greater than zero.');
+      setError("Enter a description and an amount greater than zero.");
       return;
     }
 
@@ -97,20 +110,20 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
     try {
       if (expenseToEdit) {
         await updateExpense(expenseToEdit.id, {
-        description,
-        vendorId: selectedVendor?.id,
-        vendorName: selectedVendor?.name,
-        category,
-        expenseDate,
-        amount: Number(amount),
-        taxAmount: Number(taxAmount) || 0,
-        currency,
-        paymentMethod,
-        isReimbursable,
-        receiptUrl,
-        receiptName,
-        notes,
-      });
+          description,
+          vendorId: selectedVendor?.id,
+          vendorName: selectedVendor?.name,
+          category,
+          expenseDate,
+          amount: Number(amount),
+          taxAmount: Number(taxAmount) || 0,
+          currency,
+          paymentMethod,
+          isReimbursable,
+          receiptUrl,
+          receiptName,
+          notes,
+        });
       } else {
         await addExpense({
           description,
@@ -123,7 +136,7 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
           currency,
           paymentMethod,
           isReimbursable,
-          status: 'approved',
+          status: "approved",
           receiptUrl,
           receiptName,
           notes,
@@ -131,7 +144,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
       }
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to save the expense.');
+      setError(
+        err instanceof Error ? err.message : "Unable to save the expense.",
+      );
     }
   };
 
@@ -144,9 +159,11 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
       });
       setVendorId(vend.id);
       setShowAddVendor(false);
-      setNewVendorName('');
+      setNewVendorName("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to create the vendor.');
+      setError(
+        err instanceof Error ? err.message : "Unable to create the vendor.",
+      );
     }
   };
 
@@ -160,18 +177,34 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
             </div>
             <div>
               <h3 className="font-bold text-sm text-slate-900">
-                {expenseToEdit ? 'Edit Expense' : 'Record Business Expense'}
+                {expenseToEdit ? "Edit Expense" : "Record Business Expense"}
               </h3>
-              <p className="text-[11px] text-slate-500">Log vendor charges, taxes, and receipt documents</p>
+              <p className="text-[11px] text-slate-500">
+                Log vendor charges, taxes, and receipt documents
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 font-bold text-sm"
+          >
+            ✕
+          </button>
         </div>
 
-        {error && <div className="mt-3 p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 text-xs">{error}</div>}
-        <form onSubmit={handleSave} className="mt-4 space-y-3.5 text-xs overflow-y-auto flex-1 pr-1">
+        {error && (
+          <div className="mt-3 p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 text-xs">
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={handleSave}
+          className="mt-4 space-y-3.5 text-xs overflow-y-auto flex-1 pr-1"
+        >
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Expense Description *</label>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Expense Description *
+            </label>
             <input
               type="text"
               required
@@ -184,7 +217,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Category</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Category
+              </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
@@ -204,7 +239,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="font-semibold text-slate-700">Vendor / Supplier</label>
+                <label className="font-semibold text-slate-700">
+                  Vendor / Supplier
+                </label>
                 <button
                   type="button"
                   onClick={() => setShowAddVendor(!showAddVendor)}
@@ -220,7 +257,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
               >
                 <option value="">None / Unassigned</option>
                 {vendors.map((v) => (
-                  <option key={v.id} value={v.id}>{v.name}</option>
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -247,24 +286,28 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Total Amount ({currency}) *</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Total Amount ({currency}) *
+              </label>
               <input
                 type="number"
                 step="0.01"
                 min="0.01"
                 required
-                value={amount || ''}
+                value={amount || ""}
                 onChange={(e) => setAmount(Number(e.target.value))}
                 className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Tax Amount Included</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Tax Amount Included
+              </label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
-                value={taxAmount || ''}
+                value={taxAmount || ""}
                 onChange={(e) => setTaxAmount(Number(e.target.value))}
                 className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -273,7 +316,9 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Expense Date</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Expense Date
+              </label>
               <input
                 type="date"
                 required
@@ -283,10 +328,14 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Payment Method</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Payment Method
+              </label>
               <select
                 value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                onChange={(e) =>
+                  setPaymentMethod(e.target.value as PaymentMethod)
+                }
                 className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg capitalize focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
                 <option value="credit_card">Corporate Credit Card</option>
@@ -306,13 +355,18 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
               onChange={(e) => setIsReimbursable(e.target.checked)}
               className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
             />
-            <label htmlFor="reimbursable" className="font-semibold text-slate-700 cursor-pointer">
+            <label
+              htmlFor="reimbursable"
+              className="font-semibold text-slate-700 cursor-pointer"
+            >
               Employee Reimbursable Expense
             </label>
           </div>
 
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <label className="block font-semibold text-slate-700 mb-1">Receipt Attachment</label>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Receipt Attachment
+            </label>
             <div className="flex items-center gap-3">
               <label className="cursor-pointer px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg font-semibold text-slate-700 shadow-sm flex items-center gap-1.5 transition-colors">
                 <Upload className="w-3.5 h-3.5" />
@@ -331,15 +385,21 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
                 </span>
               )}
             </div>
-            {receiptUrl && receiptUrl.startsWith('data:image') && (
+            {receiptUrl && receiptUrl.startsWith("data:image") && (
               <div className="mt-2 w-20 h-20 rounded-lg border border-slate-300 overflow-hidden">
-                <img src={receiptUrl} alt="Receipt thumbnail" className="w-full h-full object-cover" />
+                <img
+                  src={receiptUrl}
+                  alt="Receipt thumbnail"
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Notes / Business Purpose</label>
+            <label className="block font-semibold text-slate-700 mb-1">
+              Notes / Business Purpose
+            </label>
             <textarea
               rows={2}
               value={notes}
@@ -361,7 +421,7 @@ export const ExpenseEditorModal: React.FC<ExpenseEditorModalProps> = ({
               type="submit"
               className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-sm"
             >
-              {expenseToEdit ? 'Save Changes' : 'Record Expense'}
+              {expenseToEdit ? "Save Changes" : "Record Expense"}
             </button>
           </div>
         </form>

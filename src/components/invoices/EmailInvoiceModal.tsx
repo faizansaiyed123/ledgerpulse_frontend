@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
-import { Mail, Send, Paperclip, CheckCircle, AlertCircle, Eye, Sparkles, X } from 'lucide-react';
-import { useOrg } from '../../context/OrgContext.tsx';
-import { useNotifications } from '../../context/NotificationContext.tsx';
-import { Invoice, Customer } from '../../types/index.ts';
-import { generateInvoiceEmailTemplate, sendInvoiceEmail, EmailSendResult } from '../../lib/emailService.ts';
-import { formatCurrency } from '../../lib/currency.ts';
+import React, { useState } from "react";
+import {
+  Mail,
+  Send,
+  Paperclip,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  Sparkles,
+  X,
+} from "lucide-react";
+import { useOrg } from "../../context/OrgContext.tsx";
+import { useNotifications } from "../../context/NotificationContext.tsx";
+import { Invoice, Customer } from "../../types/index.ts";
+import {
+  generateInvoiceEmailTemplate,
+  sendInvoiceEmail,
+  EmailSendResult,
+} from "../../lib/emailService.ts";
+import { formatCurrency } from "../../lib/currency.ts";
 
 interface EmailInvoiceModalProps {
   isOpen: boolean;
@@ -26,44 +39,56 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
 
   const org = currentOrg || {
     id: invoice.orgId,
-    name: 'Apex Cloud Solutions Inc.',
+    name: "Apex Cloud Solutions Inc.",
     currency: invoice.currency,
     paymentTermsDays: 30,
-    createdBy: '',
-    createdAt: '',
+    createdBy: "",
+    createdAt: "",
   };
 
-  const initialRecipient = customer?.email || invoice.customerEmail || 'client@example.com';
+  const initialRecipient =
+    customer?.email || invoice.customerEmail || "client@example.com";
   const [recipientEmail, setRecipientEmail] = useState(initialRecipient);
-  const [customNote, setCustomNote] = useState('');
-  const [viewTab, setViewTab] = useState<'compose' | 'preview'>('compose');
+  const [customNote, setCustomNote] = useState("");
+  const [viewTab, setViewTab] = useState<"compose" | "preview">("compose");
   const [isSending, setIsSending] = useState(false);
   const [sentResult, setSentResult] = useState<EmailSendResult | null>(null);
-  const [sendError, setSendError] = useState('');
+  const [sendError, setSendError] = useState("");
 
   if (!isOpen) return null;
 
-  const emailTemplate = generateInvoiceEmailTemplate(invoice, org, customer, customNote);
+  const emailTemplate = generateInvoiceEmailTemplate(
+    invoice,
+    org,
+    customer,
+    customNote,
+  );
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!recipientEmail) return;
 
-    setSendError('');
+    setSendError("");
     setIsSending(true);
     try {
-      const result = await sendInvoiceEmail(invoice, org, customer, customNote, recipientEmail);
+      const result = await sendInvoiceEmail(
+        invoice,
+        org,
+        customer,
+        customNote,
+        recipientEmail,
+      );
       setSentResult(result);
 
-      if (invoice.status === 'draft') {
-        await updateInvoice(invoice.id, { status: 'sent' });
+      if (invoice.status === "draft") {
+        await updateInvoice(invoice.id, { status: "sent" });
       }
 
       addNotification({
         orgId: org.id,
         title: `Invoice ${invoice.invoiceNumber} Emailed`,
         message: `Successfully dispatched invoice with PDF attachment to ${result.recipientEmail} (ID: ${result.messageId}).`,
-        type: 'system',
+        type: "system",
         link: `/invoices`,
       });
 
@@ -71,8 +96,12 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
         onEmailSentSuccess(result);
       }
     } catch (err) {
-      console.error('Failed to send invoice email:', err);
-      setSendError(err instanceof Error ? err.message : 'The invoice email could not be sent.');
+      console.error("Failed to send invoice email:", err);
+      setSendError(
+        err instanceof Error
+          ? err.message
+          : "The invoice email could not be sent.",
+      );
     } finally {
       setIsSending(false);
     }
@@ -87,13 +116,21 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
               <Mail className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-slate-900">Email Invoice to Client</h3>
+              <h3 className="font-bold text-sm text-slate-900">
+                Email Invoice to Client
+              </h3>
               <p className="text-[11px] text-slate-500 font-mono">
-                {invoice.invoiceNumber} • {formatCurrency(invoice.totalAmount, invoice.currency)}
+                {invoice.invoiceNumber} •{" "}
+                {formatCurrency(invoice.totalAmount, invoice.currency)}
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 font-bold text-sm"
+          >
+            ✕
+          </button>
         </div>
 
         {sentResult ? (
@@ -102,18 +139,36 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
               <CheckCircle className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-base text-slate-900">Invoice submitted for email delivery</h4>
+              <h4 className="font-bold text-base text-slate-900">
+                Invoice submitted for email delivery
+              </h4>
               <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto">
-                Invoice PDF <strong>{sentResult.attachedFilename}</strong> was submitted to the configured mail server for
-                <span className="font-semibold text-slate-900">{sentResult.recipientEmail}</span>.
+                Invoice PDF <strong>{sentResult.attachedFilename}</strong> was
+                submitted to the configured mail server for
+                <span className="font-semibold text-slate-900">
+                  {sentResult.recipientEmail}
+                </span>
+                .
               </p>
             </div>
 
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 max-w-md mx-auto space-y-1 font-mono text-left">
-              <div><span className="text-slate-400">Message ID:</span> {sentResult.messageId}</div>
-              <div><span className="text-slate-400">Timestamp:</span> {new Date(sentResult.sentAt).toLocaleString()}</div>
-              <div><span className="text-slate-400">Attachment:</span> {sentResult.attachedFilename} (Vector PDF)</div>
-              <div><span className="text-slate-400">Status:</span> Accepted by configured SMTP server</div>
+              <div>
+                <span className="text-slate-400">Message ID:</span>{" "}
+                {sentResult.messageId}
+              </div>
+              <div>
+                <span className="text-slate-400">Timestamp:</span>{" "}
+                {new Date(sentResult.sentAt).toLocaleString()}
+              </div>
+              <div>
+                <span className="text-slate-400">Attachment:</span>{" "}
+                {sentResult.attachedFilename} (Vector PDF)
+              </div>
+              <div>
+                <span className="text-slate-400">Status:</span> Accepted by
+                configured SMTP server
+              </div>
             </div>
 
             <div className="pt-2">
@@ -131,18 +186,22 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
               <div className="flex gap-1 bg-slate-100 p-0.5 rounded-lg">
                 <button
                   type="button"
-                  onClick={() => setViewTab('compose')}
+                  onClick={() => setViewTab("compose")}
                   className={`px-3 py-1 rounded-md text-[11px] font-semibold transition-colors ${
-                    viewTab === 'compose' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                    viewTab === "compose"
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   Compose Email
                 </button>
                 <button
                   type="button"
-                  onClick={() => setViewTab('preview')}
+                  onClick={() => setViewTab("preview")}
                   className={`px-3 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1 transition-colors ${
-                    viewTab === 'preview' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                    viewTab === "preview"
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   <Eye className="w-3 h-3" />
@@ -156,10 +215,15 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
               </div>
             </div>
 
-            {viewTab === 'compose' ? (
-              <form onSubmit={handleSend} className="space-y-3 overflow-y-auto flex-1 pr-1">
+            {viewTab === "compose" ? (
+              <form
+                onSubmit={handleSend}
+                className="space-y-3 overflow-y-auto flex-1 pr-1"
+              >
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Recipient Client Email *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Recipient Client Email *
+                  </label>
                   <input
                     type="email"
                     required
@@ -169,12 +233,15 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-xs font-semibold"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">
-                    Pre-filled from {customer?.name || invoice.customerName}'s registered record
+                    Pre-filled from {customer?.name || invoice.customerName}'s
+                    registered record
                   </p>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Subject</label>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Subject
+                  </label>
                   <input
                     type="text"
                     disabled
@@ -188,8 +255,12 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Paperclip className="w-4 h-4 text-indigo-600" />
                     <div>
-                      <p className="font-semibold text-indigo-950">{emailTemplate.attachedFilename}</p>
-                      <p className="text-[10px] text-indigo-700">Client-ready vector PDF formatted invoice</p>
+                      <p className="font-semibold text-indigo-950">
+                        {emailTemplate.attachedFilename}
+                      </p>
+                      <p className="text-[10px] text-indigo-700">
+                        Client-ready vector PDF formatted invoice
+                      </p>
                     </div>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
@@ -198,7 +269,9 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Custom Note to Client (Optional)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Custom Note to Client (Optional)
+                  </label>
                   <textarea
                     rows={3}
                     value={customNote}
@@ -228,8 +301,14 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                     disabled={isSending || !recipientEmail}
                     className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-50"
                   >
-                    <Send className={`w-3.5 h-3.5 ${isSending ? 'animate-pulse' : ''}`} />
-                    <span>{isSending ? 'Sending Email & PDF...' : 'Send Invoice Email'}</span>
+                    <Send
+                      className={`w-3.5 h-3.5 ${isSending ? "animate-pulse" : ""}`}
+                    />
+                    <span>
+                      {isSending
+                        ? "Sending Email & PDF..."
+                        : "Send Invoice Email"}
+                    </span>
                   </button>
                 </div>
               </form>
@@ -238,9 +317,16 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
               <div className="overflow-y-auto flex-1 border border-slate-200 rounded-xl bg-slate-50 p-4 space-y-3">
                 <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
                   <div className="border-b border-slate-100 pb-2">
-                    <p className="text-[11px] text-slate-500"><strong>Subject:</strong> {emailTemplate.subject}</p>
-                    <p className="text-[11px] text-slate-500"><strong>To:</strong> {recipientEmail}</p>
-                    <p className="text-[11px] text-slate-500"><strong>Attachment:</strong> {emailTemplate.attachedFilename}</p>
+                    <p className="text-[11px] text-slate-500">
+                      <strong>Subject:</strong> {emailTemplate.subject}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      <strong>To:</strong> {recipientEmail}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      <strong>Attachment:</strong>{" "}
+                      {emailTemplate.attachedFilename}
+                    </p>
                   </div>
                   <div className="text-xs text-slate-700 space-y-2 leading-relaxed whitespace-pre-line font-sans">
                     {emailTemplate.bodyText}
@@ -250,7 +336,7 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                 <div className="text-right">
                   <button
                     type="button"
-                    onClick={() => setViewTab('compose')}
+                    onClick={() => setViewTab("compose")}
                     className="px-4 py-1.5 bg-indigo-600 text-white rounded-lg font-semibold text-xs"
                   >
                     Return to Send Options

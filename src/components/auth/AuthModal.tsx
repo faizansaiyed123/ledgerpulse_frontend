@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
-import { FileText, Sparkles, AlertCircle, ArrowRight, Shield, User, Lock, Mail } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext.tsx';
+import React, { useState } from "react";
+import {
+  FileText,
+  Sparkles,
+  AlertCircle,
+  ArrowRight,
+  Shield,
+  User,
+  Lock,
+  Mail,
+} from "lucide-react";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialMode?: 'login' | 'register';
+  initialMode?: "login" | "register";
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'login' }) => {
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail, signInAsDemo, error, clearError } = useAuth();
-  const [mode, setMode] = useState<'login' | 'register'>(initialMode);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+export const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  initialMode = "login",
+}) => {
+  const {
+    signInWithGoogle,
+    signInWithEmail,
+    signUpWithEmail,
+    signInAsDemo,
+    error,
+    clearError,
+  } = useAuth();
+  const [mode, setMode] = useState<"login" | "register">(initialMode);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -23,7 +43,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     setSubmitting(true);
     clearError();
     try {
-      if (mode === 'login') {
+      if (mode === "login") {
         await signInWithEmail(email, password);
       } else {
         await signUpWithEmail(email, password, name);
@@ -47,7 +67,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     }
   };
 
-  const handleDemo = (role: 'owner' | 'accountant' | 'staff') => {
+  const handleDemo = (role: "owner" | "accountant" | "staff") => {
     signInAsDemo(role);
     onClose();
   };
@@ -67,40 +87,45 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             <FileText className="w-6 h-6" />
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            {mode === 'login' ? 'Sign in to LedgerPulse' : 'Create Your Account'}
+            {mode === "login"
+              ? "Sign in to LedgerPulse"
+              : "Create Your Account"}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            {mode === 'login'
-              ? 'Access your invoice workspace & expenses'
-              : 'Start your 14-day free trial. No credit card required.'}
+            {mode === "login"
+              ? "Access your invoice workspace & expenses"
+              : "Start your 14-day free trial. No credit card required."}
           </p>
         </div>
 
         <div className="mt-5 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Instant Demo Exploration:
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Instant Demo
+              Exploration:
             </span>
-            <span className="text-[10px] text-blue-700 bg-white/80 px-2 py-0.5 rounded-full font-semibold">1-Click</span>
+            <span className="text-[10px] text-blue-700 bg-white/80 px-2 py-0.5 rounded-full font-semibold">
+              1-Click
+            </span>
           </div>
           <div className="grid grid-cols-3 gap-1.5 text-xs">
             <button
               type="button"
-              onClick={() => handleDemo('owner')}
+              onClick={() => handleDemo("owner")}
               className="py-1.5 px-2 rounded-lg bg-white hover:bg-blue-600 hover:text-white font-medium text-slate-700 shadow-sm border border-slate-200 transition-colors text-center"
             >
               👑 Owner
             </button>
             <button
               type="button"
-              onClick={() => handleDemo('accountant')}
+              onClick={() => handleDemo("accountant")}
               className="py-1.5 px-2 rounded-lg bg-white hover:bg-blue-600 hover:text-white font-medium text-slate-700 shadow-sm border border-slate-200 transition-colors text-center"
             >
               📊 Accountant
             </button>
             <button
               type="button"
-              onClick={() => handleDemo('staff')}
+              onClick={() => handleDemo("staff")}
               className="py-1.5 px-2 rounded-lg bg-white hover:bg-blue-600 hover:text-white font-medium text-slate-700 shadow-sm border border-slate-200 transition-colors text-center"
             >
               💼 Staff
@@ -149,14 +174,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             <div className="w-full border-t border-slate-200" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-2 text-slate-400">or with work email</span>
+            <span className="bg-white px-2 text-slate-400">
+              or with work email
+            </span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {mode === 'register' && (
+          {mode === "register" && (
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Full Name
+              </label>
               <div className="relative">
                 <User className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
@@ -172,7 +201,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Email Address
+            </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               <input
@@ -187,7 +218,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Password
+            </label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               <input
@@ -207,19 +240,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             disabled={submitting}
             className="w-full mt-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
-            <span>{mode === 'login' ? 'Sign In' : 'Create Free Account'}</span>
+            <span>{mode === "login" ? "Sign In" : "Create Free Account"}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
 
         <div className="mt-5 text-center text-xs text-slate-500">
-          {mode === 'login' ? (
+          {mode === "login" ? (
             <>
-              Don't have an account yet?{' '}
+              Don't have an account yet?{" "}
               <button
                 type="button"
                 onClick={() => {
-                  setMode('register');
+                  setMode("register");
                   clearError();
                 }}
                 className="text-blue-600 font-semibold hover:underline"
@@ -229,11 +262,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             </>
           ) : (
             <>
-              Already have an account?{' '}
+              Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => {
-                  setMode('login');
+                  setMode("login");
                   clearError();
                 }}
                 className="text-blue-600 font-semibold hover:underline"

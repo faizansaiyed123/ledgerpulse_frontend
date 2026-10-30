@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 import {
   FileText,
   Search,
@@ -14,11 +14,11 @@ import {
   CheckCircle,
   MoreVertical,
   ExternalLink,
-} from 'lucide-react';
-import { useOrg } from '../../context/OrgContext.tsx';
-import { Invoice, InvoiceStatus } from '../../types/index.ts';
-import { formatCurrency } from '../../lib/currency.ts';
-import { downloadInvoicePDF, exportToCSV } from '../../lib/pdf.ts';
+} from "lucide-react";
+import { useOrg } from "../../context/OrgContext.tsx";
+import { Invoice, InvoiceStatus } from "../../types/index.ts";
+import { formatCurrency } from "../../lib/currency.ts";
+import { downloadInvoicePDF, exportToCSV } from "../../lib/pdf.ts";
 
 interface InvoicesListProps {
   onOpenNewInvoice: () => void;
@@ -33,32 +33,60 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
   onEditInvoice,
   onRecordPayment,
 }) => {
-  const { currentOrg, invoices, deleteInvoice, duplicateInvoice, userRole, canEditFinancials, canManageOrg } = useOrg();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'date_desc' | 'date_asc' | 'amount_desc' | 'amount_asc'>('date_desc');
+  const {
+    currentOrg,
+    invoices,
+    deleteInvoice,
+    duplicateInvoice,
+    userRole,
+    canEditFinancials,
+    canManageOrg,
+  } = useOrg();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<
+    "date_desc" | "date_asc" | "amount_desc" | "amount_asc"
+  >("date_desc");
 
   const filteredInvoices = useMemo(() => {
     return invoices
       .filter((inv) => {
-        const matchesStatus = statusFilter === 'all' || inv.status === statusFilter;
+        const matchesStatus =
+          statusFilter === "all" || inv.status === statusFilter;
         const matchesSearch =
           inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
           inv.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (inv.customerEmail && inv.customerEmail.toLowerCase().includes(searchQuery.toLowerCase()));
+          (inv.customerEmail &&
+            inv.customerEmail
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()));
         return matchesStatus && matchesSearch;
       })
       .sort((a, b) => {
-        if (sortBy === 'date_desc') return b.issueDate.localeCompare(a.issueDate);
-        if (sortBy === 'date_asc') return a.issueDate.localeCompare(b.issueDate);
-        if (sortBy === 'amount_desc') return b.totalAmount - a.totalAmount;
-        if (sortBy === 'amount_asc') return a.totalAmount - b.totalAmount;
+        if (sortBy === "date_desc")
+          return b.issueDate.localeCompare(a.issueDate);
+        if (sortBy === "date_asc")
+          return a.issueDate.localeCompare(b.issueDate);
+        if (sortBy === "amount_desc") return b.totalAmount - a.totalAmount;
+        if (sortBy === "amount_asc") return a.totalAmount - b.totalAmount;
         return 0;
       });
   }, [invoices, statusFilter, searchQuery, sortBy]);
 
   const handleExportCSV = () => {
-    const headers = ['Invoice Number', 'Customer Name', 'Issue Date', 'Due Date', 'Status', 'Currency', 'Subtotal', 'Tax', 'Total Amount', 'Paid Amount', 'Balance Due'];
+    const headers = [
+      "Invoice Number",
+      "Customer Name",
+      "Issue Date",
+      "Due Date",
+      "Status",
+      "Currency",
+      "Subtotal",
+      "Tax",
+      "Total Amount",
+      "Paid Amount",
+      "Balance Due",
+    ];
     const rows = filteredInvoices.map((inv) => [
       inv.invoiceNumber,
       inv.customerName,
@@ -72,23 +100,50 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
       inv.paidAmount,
       inv.balanceDue,
     ]);
-    exportToCSV(`Invoices_${currentOrg?.name || 'Workspace'}_${new Date().toISOString().split('T')[0]}.csv`, [headers, ...rows]);
+    exportToCSV(
+      `Invoices_${currentOrg?.name || "Workspace"}_${new Date().toISOString().split("T")[0]}.csv`,
+      [headers, ...rows],
+    );
   };
 
   const getStatusBadge = (status: InvoiceStatus) => {
     switch (status) {
-      case 'paid':
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">PAID</span>;
-      case 'partially_paid':
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">PARTIAL</span>;
-      case 'overdue':
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">OVERDUE</span>;
-      case 'sent':
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">SENT</span>;
-      case 'cancelled':
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">CANCELLED</span>;
+      case "paid":
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+            PAID
+          </span>
+        );
+      case "partially_paid":
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
+            PARTIAL
+          </span>
+        );
+      case "overdue":
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+            OVERDUE
+          </span>
+        );
+      case "sent":
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+            SENT
+          </span>
+        );
+      case "cancelled":
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+            CANCELLED
+          </span>
+        );
       default:
-        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">DRAFT</span>;
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+            DRAFT
+          </span>
+        );
     }
   };
 
@@ -96,7 +151,9 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Invoice Management</h2>
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+            Invoice Management
+          </h2>
           <p className="text-xs text-slate-500">
             {filteredInvoices.length} of {invoices.length} total invoices shown
           </p>
@@ -135,17 +192,21 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-1 w-full md:w-auto">
-          {['all', 'draft', 'sent', 'partially_paid', 'paid', 'overdue'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-lg capitalize font-semibold transition-colors ${
-                statusFilter === st ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {st.replace('_', ' ')}
-            </button>
-          ))}
+          {["all", "draft", "sent", "partially_paid", "paid", "overdue"].map(
+            (st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-3 py-1.5 rounded-lg capitalize font-semibold transition-colors ${
+                  statusFilter === st
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {st.replace("_", " ")}
+              </button>
+            ),
+          )}
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
@@ -188,7 +249,10 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
                 </tr>
               ) : (
                 filteredInvoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={inv.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <td className="py-3.5 px-4 font-mono font-bold text-slate-900 flex items-center gap-1.5">
                       <button
                         onClick={() => onViewInvoice(inv)}
@@ -199,21 +263,35 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-800">
                       <div>{inv.customerName}</div>
-                      {inv.customerEmail && <div className="text-[10px] text-slate-400">{inv.customerEmail}</div>}
+                      {inv.customerEmail && (
+                        <div className="text-[10px] text-slate-400">
+                          {inv.customerEmail}
+                        </div>
+                      )}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500">{inv.issueDate}</td>
-                    <td className="py-3.5 px-4 text-slate-500">{inv.dueDate}</td>
+                    <td className="py-3.5 px-4 text-slate-500">
+                      {inv.issueDate}
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-500">
+                      {inv.dueDate}
+                    </td>
                     <td className="py-3.5 px-4 font-bold text-slate-900">
                       {formatCurrency(inv.totalAmount, inv.currency)}
                     </td>
                     <td className="py-3.5 px-4 font-semibold">
                       {inv.balanceDue > 0 ? (
-                        <span className="text-rose-600">{formatCurrency(inv.balanceDue, inv.currency)}</span>
+                        <span className="text-rose-600">
+                          {formatCurrency(inv.balanceDue, inv.currency)}
+                        </span>
                       ) : (
-                        <span className="text-emerald-600 font-bold">$0.00</span>
+                        <span className="text-emerald-600 font-bold">
+                          $0.00
+                        </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4">{getStatusBadge(inv.status)}</td>
+                    <td className="py-3.5 px-4">
+                      {getStatusBadge(inv.status)}
+                    </td>
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
@@ -232,7 +310,9 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
                           </button>
                         )}
                         <button
-                          onClick={() => currentOrg && downloadInvoicePDF(inv, currentOrg)}
+                          onClick={() =>
+                            currentOrg && downloadInvoicePDF(inv, currentOrg)
+                          }
                           className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
                           title="Download PDF"
                         >
@@ -250,7 +330,9 @@ export const InvoicesList: React.FC<InvoicesListProps> = ({
                         {canManageOrg && (
                           <button
                             onClick={() => {
-                              if (confirm(`Delete invoice ${inv.invoiceNumber}?`)) {
+                              if (
+                                confirm(`Delete invoice ${inv.invoiceNumber}?`)
+                              ) {
                                 deleteInvoice(inv.id);
                               }
                             }}

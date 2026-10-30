@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { InAppNotification } from '../types/index.ts';
-import { useOrg } from './OrgContext.tsx';
-import { useAuth } from './AuthContext.tsx';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { InAppNotification } from "../types/index.ts";
+import { useOrg } from "./OrgContext.tsx";
+import { useAuth } from "./AuthContext.tsx";
 
 interface NotificationContextType {
   notifications: InAppNotification[];
@@ -9,10 +15,14 @@ interface NotificationContextType {
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   clearNotification: (id: string) => void;
-  addNotification: (notif: Omit<InAppNotification, 'id' | 'createdAt' | 'isRead'>) => void;
+  addNotification: (
+    notif: Omit<InAppNotification, "id" | "createdAt" | "isRead">,
+  ) => void;
 }
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType | undefined>(
+  undefined,
+);
 
 function safeParse(raw: string | null): InAppNotification[] {
   if (!raw) return [];
@@ -24,17 +34,24 @@ function safeParse(raw: string | null): InAppNotification[] {
   }
 }
 
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { currentOrg, invoices } = useOrg();
   const { currentUser, isDemo } = useAuth();
   const storageKey = useMemo(
-    () => currentUser && currentOrg ? `lp_notifications_${currentUser.uid}_${currentOrg.id}` : null,
+    () =>
+      currentUser && currentOrg
+        ? `lp_notifications_${currentUser.uid}_${currentOrg.id}`
+        : null,
     [currentUser?.uid, currentOrg?.id],
   );
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
 
   useEffect(() => {
-    setNotifications(storageKey ? safeParse(localStorage.getItem(storageKey)) : []);
+    setNotifications(
+      storageKey ? safeParse(localStorage.getItem(storageKey)) : [],
+    );
   }, [storageKey]);
 
   useEffect(() => {
@@ -44,16 +61,21 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   useEffect(() => {
     if (!currentOrg || !currentUser || !invoices.length) return;
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const overdueNotifications = invoices
-      .filter((invoice) => invoice.balanceDue > 0 && invoice.status !== 'cancelled' && invoice.dueDate < today)
+      .filter(
+        (invoice) =>
+          invoice.balanceDue > 0 &&
+          invoice.status !== "cancelled" &&
+          invoice.dueDate < today,
+      )
       .map<InAppNotification>((invoice) => ({
         id: `notif_overdue_${invoice.id}`,
         orgId: currentOrg.id,
         userId: currentUser.uid,
         title: `Invoice ${invoice.invoiceNumber} is Overdue`,
         message: `${invoice.customerName} has an overdue balance of ${currentOrg.currency} ${invoice.balanceDue.toFixed(2)} (Due: ${invoice.dueDate}).`,
-        type: 'invoice_overdue',
+        type: "invoice_overdue",
         isRead: false,
         link: `/?invoice=${encodeURIComponent(invoice.id)}`,
         createdAt: new Date().toISOString(),
@@ -66,7 +88,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   }, [currentOrg, currentUser, invoices, isDemo]);
 
-  const addNotification = (notif: Omit<InAppNotification, 'id' | 'createdAt' | 'isRead'>) => {
+  const addNotification = (
+    notif: Omit<InAppNotification, "id" | "createdAt" | "isRead">,
+  ) => {
     const notification: InAppNotification = {
       ...notif,
       userId: notif.userId || currentUser?.uid,
@@ -77,13 +101,27 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications((prev) => [notification, ...prev]);
   };
 
-  const markAsRead = (id: string) => setNotifications((prev) => prev.map((item) => item.id === id ? { ...item, isRead: true } : item));
-  const markAllAsRead = () => setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-  const clearNotification = (id: string) => setNotifications((prev) => prev.filter((item) => item.id !== id));
+  const markAsRead = (id: string) =>
+    setNotifications((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, isRead: true } : item)),
+    );
+  const markAllAsRead = () =>
+    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
+  const clearNotification = (id: string) =>
+    setNotifications((prev) => prev.filter((item) => item.id !== id));
   const unreadCount = notifications.filter((item) => !item.isRead).length;
 
   return (
-    <NotificationContext.Provider value={{ notifications, unreadCount, markAsRead, markAllAsRead, clearNotification, addNotification }}>
+    <NotificationContext.Provider
+      value={{
+        notifications,
+        unreadCount,
+        markAsRead,
+        markAllAsRead,
+        clearNotification,
+        addNotification,
+      }}
+    >
       {children}
     </NotificationContext.Provider>
   );
@@ -91,6 +129,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
-  if (!context) throw new Error('useNotifications must be used within a NotificationProvider');
+  if (!context)
+    throw new Error(
+      "useNotifications must be used within a NotificationProvider",
+    );
   return context;
 };
