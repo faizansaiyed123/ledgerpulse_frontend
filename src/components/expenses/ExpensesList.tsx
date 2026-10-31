@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 import {
   Receipt,
   Search,
@@ -14,11 +14,11 @@ import {
   Tag,
   Building,
   Image as ImageIcon,
-} from 'lucide-react';
-import { useOrg } from '../../context/OrgContext.tsx';
-import { Expense, ExpenseCategory } from '../../types/index.ts';
-import { formatCurrency } from '../../lib/currency.ts';
-import { exportToCSV } from '../../lib/pdf.ts';
+} from "lucide-react";
+import { useOrg } from "../../context/OrgContext.tsx";
+import { Expense, ExpenseCategory } from "../../types/index.ts";
+import { formatCurrency } from "../../lib/currency.ts";
+import { exportToCSV } from "../../lib/pdf.ts";
 
 interface ExpensesListProps {
   onOpenNewExpense: () => void;
@@ -29,14 +29,24 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
   onOpenNewExpense,
   onEditExpense,
 }) => {
-  const { currentOrg, expenses, approveExpense, rejectExpense, deleteExpense, canApproveExpenses, canManageOrg } = useOrg();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'date_desc' | 'date_asc' | 'amount_desc' | 'amount_asc'>('date_desc');
+  const {
+    currentOrg,
+    expenses,
+    approveExpense,
+    rejectExpense,
+    deleteExpense,
+    canApproveExpenses,
+    canManageOrg,
+  } = useOrg();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<
+    "date_desc" | "date_asc" | "amount_desc" | "amount_asc"
+  >("date_desc");
   const [activeReceiptUrl, setActiveReceiptUrl] = useState<string | null>(null);
 
-  const currency = currentOrg?.currency || 'USD';
+  const currency = currentOrg?.currency || "USD";
 
   const categoryTotals = useMemo(() => {
     const totals: Record<string, number> = {};
@@ -49,18 +59,23 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
   const filteredExpenses = useMemo(() => {
     return expenses
       .filter((e) => {
-        const matchesCategory = categoryFilter === 'all' || e.category === categoryFilter;
-        const matchesStatus = statusFilter === 'all' || e.status === statusFilter;
+        const matchesCategory =
+          categoryFilter === "all" || e.category === categoryFilter;
+        const matchesStatus =
+          statusFilter === "all" || e.status === statusFilter;
         const matchesSearch =
           e.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (e.vendorName && e.vendorName.toLowerCase().includes(searchQuery.toLowerCase()));
+          (e.vendorName &&
+            e.vendorName.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesCategory && matchesStatus && matchesSearch;
       })
       .sort((a, b) => {
-        if (sortBy === 'date_desc') return b.expenseDate.localeCompare(a.expenseDate);
-        if (sortBy === 'date_asc') return a.expenseDate.localeCompare(b.expenseDate);
-        if (sortBy === 'amount_desc') return b.amount - a.amount;
-        if (sortBy === 'amount_asc') return a.amount - b.amount;
+        if (sortBy === "date_desc")
+          return b.expenseDate.localeCompare(a.expenseDate);
+        if (sortBy === "date_asc")
+          return a.expenseDate.localeCompare(b.expenseDate);
+        if (sortBy === "amount_desc") return b.amount - a.amount;
+        if (sortBy === "amount_asc") return a.amount - b.amount;
         return 0;
       });
   }, [expenses, categoryFilter, statusFilter, searchQuery, sortBy]);
@@ -68,28 +83,47 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
   const totalFiltered = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
 
   const handleExportCSV = () => {
-    const headers = ['Description', 'Vendor', 'Category', 'Date', 'Amount', 'Tax', 'Payment Method', 'Reimbursable', 'Status'];
+    const headers = [
+      "Description",
+      "Vendor",
+      "Category",
+      "Date",
+      "Amount",
+      "Tax",
+      "Payment Method",
+      "Reimbursable",
+      "Status",
+    ];
     const rows = filteredExpenses.map((e) => [
       e.description,
-      e.vendorName || '',
+      e.vendorName || "",
       e.category,
       e.expenseDate,
       e.amount,
       e.taxAmount || 0,
       e.paymentMethod,
-      e.isReimbursable ? 'Yes' : 'No',
+      e.isReimbursable ? "Yes" : "No",
       e.status,
     ]);
-    exportToCSV(`Expenses_${currentOrg?.name || 'Workspace'}_${new Date().toISOString().split('T')[0]}.csv`, [headers, ...rows]);
+    exportToCSV(
+      `Expenses_${currentOrg?.name || "Workspace"}_${new Date().toISOString().split("T")[0]}.csv`,
+      [headers, ...rows],
+    );
   };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Expense Management &amp; Receipts</h2>
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+            Expense Management &amp; Receipts
+          </h2>
           <p className="text-xs text-slate-500">
-            Total of <span className="font-semibold text-slate-800">{formatCurrency(totalFiltered, currency)}</span> in filtered expenses
+            Total of{" "}
+            <span className="font-semibold text-slate-800">
+              {formatCurrency(totalFiltered, currency)}
+            </span>{" "}
+            in filtered expenses
           </p>
         </div>
 
@@ -112,17 +146,21 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {['software', 'office', 'travel', 'meals'].map((cat) => (
+        {["software", "office", "travel", "meals"].map((cat) => (
           <div
             key={cat}
-            onClick={() => setCategoryFilter(categoryFilter === cat ? 'all' : cat)}
+            onClick={() =>
+              setCategoryFilter(categoryFilter === cat ? "all" : cat)
+            }
             className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
               categoryFilter === cat
-                ? 'bg-blue-50/80 border-blue-300 ring-2 ring-blue-500'
-                : 'bg-white border-slate-200 hover:bg-slate-50'
+                ? "bg-blue-50/80 border-blue-300 ring-2 ring-blue-500"
+                : "bg-white border-slate-200 hover:bg-slate-50"
             }`}
           >
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{cat}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              {cat}
+            </span>
             <p className="text-base font-bold text-slate-900 mt-1">
               {formatCurrency(categoryTotals[cat] || 0, currency)}
             </p>
@@ -161,12 +199,14 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
           </select>
 
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
-            {['all', 'approved', 'pending', 'rejected'].map((st) => (
+            {["all", "approved", "pending", "rejected"].map((st) => (
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
                 className={`px-2.5 py-1 rounded text-[11px] capitalize font-semibold transition-colors ${
-                  statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                  statusFilter === st
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {st}
@@ -212,7 +252,10 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
                 </tr>
               ) : (
                 filteredExpenses.map((exp) => (
-                  <tr key={exp.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={exp.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <td className="py-3.5 px-4 font-semibold text-slate-900 max-w-[220px] truncate">
                       {exp.description}
                       {exp.isReimbursable && (
@@ -221,13 +264,17 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
                         </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-700">{exp.vendorName || '—'}</td>
+                    <td className="py-3.5 px-4 text-slate-700">
+                      {exp.vendorName || "—"}
+                    </td>
                     <td className="py-3.5 px-4 capitalize">
                       <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px]">
                         {exp.category}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500">{exp.expenseDate}</td>
+                    <td className="py-3.5 px-4 text-slate-500">
+                      {exp.expenseDate}
+                    </td>
                     <td className="py-3.5 px-4 font-bold text-slate-900">
                       {formatCurrency(exp.amount, exp.currency)}
                     </td>
@@ -241,24 +288,26 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
                           <span>View</span>
                         </button>
                       ) : (
-                        <span className="text-slate-400 text-[10px]">No receipt</span>
+                        <span className="text-slate-400 text-[10px]">
+                          No receipt
+                        </span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-1.5">
                         <span
                           className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                            exp.status === 'approved'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : exp.status === 'pending'
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-rose-100 text-rose-800'
+                            exp.status === "approved"
+                              ? "bg-emerald-100 text-emerald-800"
+                              : exp.status === "pending"
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-rose-100 text-rose-800"
                           }`}
                         >
                           {exp.status}
                         </span>
 
-                        {exp.status === 'pending' && canApproveExpenses && (
+                        {exp.status === "pending" && canApproveExpenses && (
                           <div className="flex items-center gap-1 ml-1">
                             <button
                               onClick={() => approveExpense(exp.id)}
@@ -290,7 +339,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
                         {canManageOrg && (
                           <button
                             onClick={() => {
-                              if (confirm('Delete this expense?')) {
+                              if (confirm("Delete this expense?")) {
                                 deleteExpense(exp.id);
                               }
                             }}
@@ -314,7 +363,9 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-xl w-full p-4 shadow-2xl relative">
             <div className="flex justify-between items-center pb-2 border-b border-slate-200 mb-3">
-              <span className="font-bold text-slate-900 text-xs">Receipt Document Preview</span>
+              <span className="font-bold text-slate-900 text-xs">
+                Receipt Document Preview
+              </span>
               <button
                 onClick={() => setActiveReceiptUrl(null)}
                 className="text-slate-500 hover:text-slate-800 text-sm font-bold"

@@ -1,8 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, X, Calculator, Calendar, User, FileText, Check } from 'lucide-react';
-import { useOrg } from '../../context/OrgContext.tsx';
-import { Invoice, InvoiceItem, Customer } from '../../types/index.ts';
-import { formatCurrency } from '../../lib/currency.ts';
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  Trash2,
+  X,
+  Calculator,
+  Calendar,
+  User,
+  FileText,
+  Check,
+} from "lucide-react";
+import { useOrg } from "../../context/OrgContext.tsx";
+import { Invoice, InvoiceItem, Customer } from "../../types/index.ts";
+import { formatCurrency } from "../../lib/currency.ts";
 
 interface InvoiceEditorModalProps {
   isOpen: boolean;
@@ -15,25 +24,32 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
   onClose,
   invoiceToEdit,
 }) => {
-  const { currentOrg, customers, invoices, addInvoice, updateInvoice, addCustomer } = useOrg();
+  const {
+    currentOrg,
+    customers,
+    invoices,
+    addInvoice,
+    updateInvoice,
+    addCustomer,
+  } = useOrg();
 
-  const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [customerId, setCustomerId] = useState('');
-  const [issueDate, setIssueDate] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [currency, setCurrency] = useState('USD');
-  const [notes, setNotes] = useState('');
-  const [terms, setTerms] = useState('');
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [customerId, setCustomerId] = useState("");
+  const [issueDate, setIssueDate] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [currency, setCurrency] = useState("USD");
+  const [notes, setNotes] = useState("");
+  const [terms, setTerms] = useState("");
 
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [discountPercent, setDiscountPercent] = useState<number>(0);
   const [taxPercent, setTaxPercent] = useState<number>(5);
 
   const [showAddCustomer, setShowAddCustomer] = useState(false);
-  const [newCustName, setNewCustName] = useState('');
-  const [newCustEmail, setNewCustEmail] = useState('');
-  const [newCustCompany, setNewCustCompany] = useState('');
-  const [error, setError] = useState('');
+  const [newCustName, setNewCustName] = useState("");
+  const [newCustEmail, setNewCustEmail] = useState("");
+  const [newCustCompany, setNewCustCompany] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (invoiceToEdit) {
@@ -42,37 +58,40 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
       setIssueDate(invoiceToEdit.issueDate);
       setDueDate(invoiceToEdit.dueDate);
       setCurrency(invoiceToEdit.currency);
-      setNotes(invoiceToEdit.notes || '');
-      setTerms(invoiceToEdit.terms || '');
+      setNotes(invoiceToEdit.notes || "");
+      setTerms(invoiceToEdit.terms || "");
       setItems(invoiceToEdit.items);
       setDiscountPercent(invoiceToEdit.discountPercent || 0);
       setTaxPercent(invoiceToEdit.taxPercent || 0);
     } else {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().split("T")[0];
       const due = new Date();
       due.setDate(due.getDate() + (currentOrg?.paymentTermsDays || 30));
 
       const year = new Date().getFullYear();
       const usedNumbers = invoices
-        .map((invoice) => invoice.invoiceNumber.match(new RegExp(`^INV-${year}-(\\d+)$`)))
+        .map((invoice) =>
+          invoice.invoiceNumber.match(new RegExp(`^INV-${year}-(\\d+)$`)),
+        )
         .filter((match): match is RegExpMatchArray => Boolean(match))
         .map((match) => Number(match[1]));
-      const nextSequence = (usedNumbers.length ? Math.max(...usedNumbers) : 0) + 1;
-      const nextNum = `INV-${year}-${String(nextSequence).padStart(3, '0')}`;
+      const nextSequence =
+        (usedNumbers.length ? Math.max(...usedNumbers) : 0) + 1;
+      const nextNum = `INV-${year}-${String(nextSequence).padStart(3, "0")}`;
 
       setInvoiceNumber(nextNum);
-      setCustomerId(customers[0]?.id || '');
+      setCustomerId(customers[0]?.id || "");
       setIssueDate(today);
-      setDueDate(due.toISOString().split('T')[0]);
-      setCurrency(currentOrg?.currency || 'USD');
-      setNotes(currentOrg?.invoiceNotes || 'Thank you for your business!');
-      setTerms(currentOrg?.invoiceTerms || 'Payment due within 30 days.');
+      setDueDate(due.toISOString().split("T")[0]);
+      setCurrency(currentOrg?.currency || "USD");
+      setNotes(currentOrg?.invoiceNotes || "Thank you for your business!");
+      setTerms(currentOrg?.invoiceTerms || "Payment due within 30 days.");
       setDiscountPercent(0);
       setTaxPercent(5);
       setItems([
         {
           id: `item_${Date.now()}`,
-          description: 'Consulting & Implementation Services',
+          description: "Consulting & Implementation Services",
           quantity: 1,
           unitPrice: 1500,
           amount: 1500,
@@ -88,7 +107,7 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
       ...prev,
       {
         id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        description: '',
+        description: "",
         quantity: 1,
         unitPrice: 0,
         amount: 0,
@@ -101,20 +120,38 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const handleUpdateItem = (id: string, field: keyof InvoiceItem, value: any) => {
+  const handleUpdateItem = (
+    id: string,
+    field: keyof InvoiceItem,
+    value: any,
+  ) => {
     setItems((prev) =>
       prev.map((it) => {
         if (it.id !== id) return it;
         const updated = { ...it, [field]: value };
-        if (field === 'quantity' || field === 'unitPrice' || field === 'discountPercent') {
-          const qty = field === 'quantity' ? Number(value) : Number(it.quantity);
-          const price = field === 'unitPrice' ? Number(value) : Number(it.unitPrice);
-          const lineDiscountPercent = field === 'discountPercent' ? Number(value) : Number(it.discountPercent || 0);
+        if (
+          field === "quantity" ||
+          field === "unitPrice" ||
+          field === "discountPercent"
+        ) {
+          const qty =
+            field === "quantity" ? Number(value) : Number(it.quantity);
+          const price =
+            field === "unitPrice" ? Number(value) : Number(it.unitPrice);
+          const lineDiscountPercent =
+            field === "discountPercent"
+              ? Number(value)
+              : Number(it.discountPercent || 0);
           const gross = Math.max(0, (qty || 0) * (price || 0));
-          updated.amount = Math.max(0, gross - (gross * Math.max(0, Math.min(100, lineDiscountPercent || 0)) / 100));
+          updated.amount = Math.max(
+            0,
+            gross -
+              (gross * Math.max(0, Math.min(100, lineDiscountPercent || 0))) /
+                100,
+          );
         }
         return updated;
-      })
+      }),
     );
   };
 
@@ -124,41 +161,47 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
   const taxAmount = (taxableBase * (taxPercent || 0)) / 100;
   const totalAmount = taxableBase + taxAmount;
 
-  const handleSave = async (status: 'draft' | 'sent') => {
-    setError('');
+  const handleSave = async (status: "draft" | "sent") => {
+    setError("");
     const selectedCustomer = customers.find((c) => c.id === customerId);
     if (!selectedCustomer) {
-      alert('Please select or add a customer for this invoice.');
+      alert("Please select or add a customer for this invoice.");
       return;
     }
 
     if (!items.length || items.some((i) => !i.description.trim())) {
-      alert('Please provide descriptions for all line items.');
+      alert("Please provide descriptions for all line items.");
       return;
     }
 
     try {
       if (invoiceToEdit) {
         await updateInvoice(invoiceToEdit.id, {
-        invoiceNumber,
-        customerId: selectedCustomer.id,
-        customerName: selectedCustomer.name,
-        customerEmail: selectedCustomer.email,
-        issueDate,
-        dueDate,
-        currency,
-        subtotal,
-        discountPercent,
-        discountAmount,
-        taxPercent,
-        taxAmount,
-        totalAmount,
-        balanceDue: Math.max(0, totalAmount - (invoiceToEdit.paidAmount || 0)),
-        notes,
-        terms,
-        items,
-        status: invoiceToEdit.status === 'draft' && status === 'sent' ? 'sent' : invoiceToEdit.status,
-      });
+          invoiceNumber,
+          customerId: selectedCustomer.id,
+          customerName: selectedCustomer.name,
+          customerEmail: selectedCustomer.email,
+          issueDate,
+          dueDate,
+          currency,
+          subtotal,
+          discountPercent,
+          discountAmount,
+          taxPercent,
+          taxAmount,
+          totalAmount,
+          balanceDue: Math.max(
+            0,
+            totalAmount - (invoiceToEdit.paidAmount || 0),
+          ),
+          notes,
+          terms,
+          items,
+          status:
+            invoiceToEdit.status === "draft" && status === "sent"
+              ? "sent"
+              : invoiceToEdit.status,
+        });
       } else {
         await addInvoice({
           invoiceNumber,
@@ -183,7 +226,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
 
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to save the invoice.');
+      setError(
+        err instanceof Error ? err.message : "Unable to save the invoice.",
+      );
     }
   };
 
@@ -199,11 +244,13 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
       });
       setCustomerId(created.id);
       setShowAddCustomer(false);
-      setNewCustName('');
-      setNewCustEmail('');
-      setNewCustCompany('');
+      setNewCustName("");
+      setNewCustEmail("");
+      setNewCustCompany("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to create the customer.');
+      setError(
+        err instanceof Error ? err.message : "Unable to create the customer.",
+      );
     }
   };
 
@@ -217,9 +264,13 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900">
-                {invoiceToEdit ? `Edit Invoice: ${invoiceToEdit.invoiceNumber}` : 'Create New Invoice'}
+                {invoiceToEdit
+                  ? `Edit Invoice: ${invoiceToEdit.invoiceNumber}`
+                  : "Create New Invoice"}
               </h3>
-              <p className="text-xs text-slate-500">Configure client details, terms, and itemized billing</p>
+              <p className="text-xs text-slate-500">
+                Configure client details, terms, and itemized billing
+              </p>
             </div>
           </div>
           <button
@@ -231,10 +282,16 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
         </div>
 
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-xs">
-          {error && <div className="p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800">{error}</div>}
+          {error && (
+            <div className="p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800">
+              {error}
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Invoice Number</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Invoice Number
+              </label>
               <input
                 type="text"
                 required
@@ -262,14 +319,16 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
               >
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name} {c.company ? `(${c.company})` : ''}
+                    {c.name} {c.company ? `(${c.company})` : ""}
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Issue Date</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Issue Date
+              </label>
               <input
                 type="date"
                 required
@@ -280,7 +339,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Due Date</label>
+              <label className="block font-semibold text-slate-700 mb-1">
+                Due Date
+              </label>
               <input
                 type="date"
                 required
@@ -294,7 +355,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
           {showAddCustomer && (
             <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 space-y-3 animate-fade-in">
               <div className="flex justify-between items-center">
-                <span className="font-bold text-blue-900">Add New Customer</span>
+                <span className="font-bold text-blue-900">
+                  Add New Customer
+                </span>
                 <button
                   type="button"
                   onClick={() => setShowAddCustomer(false)}
@@ -340,7 +403,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
 
           <div className="space-y-2">
             <div className="flex justify-between items-center pb-1 border-b border-slate-200">
-              <h4 className="font-bold text-sm text-slate-800">Itemized Charges</h4>
+              <h4 className="font-bold text-sm text-slate-800">
+                Itemized Charges
+              </h4>
               <button
                 type="button"
                 onClick={handleAddItem}
@@ -358,42 +423,64 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
                   className="grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl bg-slate-50 border border-slate-200"
                 >
                   <div className="col-span-12 sm:col-span-6">
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">Description</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">
+                      Description
+                    </label>
                     <input
                       type="text"
                       required
                       placeholder="Service or product description..."
                       value={item.description}
-                      onChange={(e) => handleUpdateItem(item.id, 'description', e.target.value)}
+                      onChange={(e) =>
+                        handleUpdateItem(item.id, "description", e.target.value)
+                      }
                       className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
 
                   <div className="col-span-3 sm:col-span-2">
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">Qty</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">
+                      Qty
+                    </label>
                     <input
                       type="number"
                       min="1"
                       value={item.quantity}
-                      onChange={(e) => handleUpdateItem(item.id, 'quantity', Number(e.target.value))}
+                      onChange={(e) =>
+                        handleUpdateItem(
+                          item.id,
+                          "quantity",
+                          Number(e.target.value),
+                        )
+                      }
                       className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-right font-medium focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
 
                   <div className="col-span-4 sm:col-span-2">
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">Unit Price</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">
+                      Unit Price
+                    </label>
                     <input
                       type="number"
                       step="0.01"
                       min="0"
                       value={item.unitPrice}
-                      onChange={(e) => handleUpdateItem(item.id, 'unitPrice', Number(e.target.value))}
+                      onChange={(e) =>
+                        handleUpdateItem(
+                          item.id,
+                          "unitPrice",
+                          Number(e.target.value),
+                        )
+                      }
                       className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-right font-medium focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
 
                   <div className="col-span-4 sm:col-span-1 text-right font-bold text-slate-900 pr-1">
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">Total</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5 sm:hidden">
+                      Total
+                    </label>
                     {formatCurrency(item.amount, currency)}
                   </div>
 
@@ -415,7 +502,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200">
             <div className="space-y-3">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Notes to Customer</label>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Notes to Customer
+                </label>
                 <textarea
                   rows={2}
                   value={notes}
@@ -425,7 +514,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Terms &amp; Payment Conditions</label>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Terms &amp; Payment Conditions
+                </label>
                 <textarea
                   rows={2}
                   value={terms}
@@ -439,7 +530,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal</span>
-                <span className="font-semibold text-slate-900">{formatCurrency(subtotal, currency)}</span>
+                <span className="font-semibold text-slate-900">
+                  {formatCurrency(subtotal, currency)}
+                </span>
               </div>
 
               <div className="flex items-center justify-between text-slate-600">
@@ -455,7 +548,9 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
                   />
                   <span>%</span>
                 </div>
-                <span className="text-rose-600">-{formatCurrency(discountAmount, currency)}</span>
+                <span className="text-rose-600">
+                  -{formatCurrency(discountAmount, currency)}
+                </span>
               </div>
 
               <div className="flex items-center justify-between text-slate-600">
@@ -471,12 +566,16 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
                   />
                   <span>%</span>
                 </div>
-                <span className="font-medium text-slate-800">+{formatCurrency(taxAmount, currency)}</span>
+                <span className="font-medium text-slate-800">
+                  +{formatCurrency(taxAmount, currency)}
+                </span>
               </div>
 
               <div className="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
                 <span>Grand Total</span>
-                <span className="text-blue-600">{formatCurrency(totalAmount, currency)}</span>
+                <span className="text-blue-600">
+                  {formatCurrency(totalAmount, currency)}
+                </span>
               </div>
             </div>
           </div>
@@ -492,14 +591,14 @@ export const InvoiceEditorModal: React.FC<InvoiceEditorModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => handleSave('draft')}
+            onClick={() => handleSave("draft")}
             className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-800 transition-colors"
           >
             Save Draft
           </button>
           <button
             type="button"
-            onClick={() => handleSave('sent')}
+            onClick={() => handleSave("sent")}
             className="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-colors"
           >
             Finalize &amp; Issue Invoice

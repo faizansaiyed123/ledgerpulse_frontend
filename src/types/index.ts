@@ -1,4 +1,4 @@
-export type MemberRole = 'owner' | 'admin' | 'accountant' | 'staff';
+export type MemberRole = "owner" | "admin" | "accountant" | "staff";
 
 export interface UserProfile {
   uid: string;
@@ -38,7 +38,7 @@ export interface OrganizationMember {
   userEmail: string;
   userName?: string;
   role: MemberRole;
-  status?: 'active' | 'invited';
+  status?: "active" | "invited";
   joinedAt: string;
 }
 
@@ -89,7 +89,13 @@ export interface InvoiceItem {
   amount: number;
 }
 
-export type InvoiceStatus = 'draft' | 'sent' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
+export type InvoiceStatus =
+  | "draft"
+  | "sent"
+  | "partially_paid"
+  | "paid"
+  | "overdue"
+  | "cancelled";
 
 export interface Invoice {
   id: string;
@@ -119,7 +125,13 @@ export interface Invoice {
   createdBy?: string;
 }
 
-export type PaymentMethod = 'credit_card' | 'bank_transfer' | 'paypal' | 'cash' | 'check' | 'stripe_test';
+export type PaymentMethod =
+  | "credit_card"
+  | "bank_transfer"
+  | "paypal"
+  | "cash"
+  | "check"
+  | "stripe_test";
 
 export interface Payment {
   id: string;
@@ -138,17 +150,17 @@ export interface Payment {
 }
 
 export type ExpenseCategory =
-  | 'travel'
-  | 'meals'
-  | 'software'
-  | 'office'
-  | 'advertising'
-  | 'utilities'
-  | 'consulting'
-  | 'equipment'
-  | 'other';
+  | "travel"
+  | "meals"
+  | "software"
+  | "office"
+  | "advertising"
+  | "utilities"
+  | "consulting"
+  | "equipment"
+  | "other";
 
-export type ExpenseStatus = 'pending' | 'approved' | 'rejected';
+export type ExpenseStatus = "pending" | "approved" | "rejected";
 
 export interface Expense {
   id: string;
@@ -168,12 +180,17 @@ export interface Expense {
   receiptName?: string;
   notes?: string;
   isRecurring?: boolean;
-  recurringInterval?: 'monthly' | 'yearly';
+  recurringInterval?: "monthly" | "yearly";
   createdAt: string;
   createdBy?: string;
 }
 
-export type RecurringFrequency = 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly';
+export type RecurringFrequency =
+  | "weekly"
+  | "biweekly"
+  | "monthly"
+  | "quarterly"
+  | "yearly";
 
 export interface RecurringInvoice {
   id: string;
@@ -186,7 +203,7 @@ export interface RecurringInvoice {
   lastRunDate?: string;
   occurrences: number;
   maxOccurrences?: number;
-  status: 'active' | 'paused' | 'completed';
+  status: "active" | "paused" | "completed";
   currency: string;
   totalAmount: number;
   subtotal: number;
@@ -204,7 +221,12 @@ export interface InAppNotification {
   userId?: string;
   title: string;
   message: string;
-  type: 'invoice_due' | 'invoice_overdue' | 'payment_received' | 'expense_approval' | 'system';
+  type:
+    | "invoice_due"
+    | "invoice_overdue"
+    | "payment_received"
+    | "expense_approval"
+    | "system";
   isRead: boolean;
   link?: string;
   createdAt: string;
@@ -216,7 +238,14 @@ export interface ActivityLog {
   userId: string;
   userEmail: string;
   action: string;
-  entityType: 'invoice' | 'expense' | 'payment' | 'customer' | 'vendor' | 'organization' | 'team';
+  entityType:
+    | "invoice"
+    | "expense"
+    | "payment"
+    | "customer"
+    | "vendor"
+    | "organization"
+    | "team";
   entityId: string;
   details: string;
   createdAt: string;
