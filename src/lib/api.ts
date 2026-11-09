@@ -65,7 +65,7 @@ async function request<T>(
         import.meta.env.VITE_E2E_TEST_USER_NAME || "LedgerPulse E2E Owner",
       );
     } else {
-      const user = auth.currentUser;
+      const user = auth?.currentUser;
       if (!user) throw new ApiError("Authentication is required.", 401);
       const token = await user.getIdToken();
       headers.set("Authorization", `Bearer ${token}`);
