@@ -41,6 +41,7 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
     message: "",
   });
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactWasSimulated, setContactWasSimulated] = useState(false);
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactError, setContactError] = useState("");
   const [showLegalModal, setShowLegalModal] = useState<
@@ -59,7 +60,8 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
     setContactError("");
     setContactSubmitting(true);
     try {
-      await api.sendContact(contactForm);
+      const result = await api.sendContact(contactForm);
+      setContactWasSimulated(!!result.simulated);
       setContactSubmitted(true);
       setContactForm({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
@@ -916,8 +918,9 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
                   Inquiry Submitted
                 </h3>
                 <p className="text-sm text-slate-600 mt-1">
-                  Thank you for reaching out. A specialist from our team will
-                  contact you shortly.
+                  {contactWasSimulated
+                    ? "This inquiry was staged locally for the demo. No message was sent and nobody will contact you."
+                    : "Thank you for reaching out. A specialist from our team will contact you shortly."}
                 </p>
               </div>
             ) : (
