@@ -640,7 +640,6 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     const payment = await api.recordPayment({
       ...paymentData,
-      orgId: currentOrg.id,
     });
     const updatedInvoice = await api.getInvoice(payment.invoiceId);
     setPayments((prev) => [payment, ...prev]);
