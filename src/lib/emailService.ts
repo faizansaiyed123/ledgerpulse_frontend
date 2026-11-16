@@ -17,6 +17,7 @@ export interface EmailSendResult {
   recipientEmail: string;
   sentAt: string;
   attachedFilename: string;
+  simulated?: boolean;
 }
 
 export function generateInvoiceEmailTemplate(
@@ -55,6 +56,7 @@ export async function sendInvoiceEmail(
   customer?: Customer,
   customNote?: string,
   recipientOverride?: string,
+  simulateDelivery = false,
 ): Promise<EmailSendResult> {
   const template = generateInvoiceEmailTemplate(
     invoice,
@@ -68,6 +70,19 @@ export async function sendInvoiceEmail(
       "No recipient email address is available for this customer.",
     );
   const doc = generateInvoicePDF(invoice, organization, customer);
+  if (simulateDelivery) {
+    // Generate the PDF locally so the demo exercises the document path,
+    // but never upload it or contact an SMTP server.
+    doc.output("blob");
+    return {
+      success: true,
+      messageId: `demo-${Date.now()}`,
+      recipientEmail: targetEmail,
+      sentAt: new Date().toISOString(),
+      attachedFilename: template.attachedFilename,
+      simulated: true,
+    };
+  }
   const pdfBase64 = await blobToBase64(doc.output("blob"));
   return api.sendInvoiceEmail(invoice.id, {
     recipientEmail: targetEmail,
