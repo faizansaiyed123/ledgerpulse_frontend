@@ -107,13 +107,13 @@ export const AdminPortal: React.FC = () => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {[
+        {([
           ["Organizations", overview?.counts.organizations || 0, Building],
           ["Active Members", overview?.counts.activeMembers || 0, Users],
           ["Customers", overview?.counts.customers || 0, Users],
           ["Invoices", totals.invoices, FileText],
           ["Payments", totals.payments, DollarSign],
-        ].map(([label, value, Icon]) => (
+        ] as const).map(([label, value, Icon]) => (
           <div
             key={String(label)}
             className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
