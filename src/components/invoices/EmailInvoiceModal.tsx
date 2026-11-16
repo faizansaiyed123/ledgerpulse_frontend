@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useOrg } from "../../context/OrgContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
 import { useNotifications } from "../../context/NotificationContext.tsx";
 import { Invoice, Customer } from "../../types/index.ts";
 import {
@@ -36,6 +37,7 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
 }) => {
   const { currentOrg, updateInvoice } = useOrg();
   const { addNotification } = useNotifications();
+  const { isDemo } = useAuth();
 
   const org = currentOrg || {
     id: invoice.orgId,
@@ -77,6 +79,7 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
         customer,
         customNote,
         recipientEmail,
+        isDemo,
       );
       setSentResult(result);
 
@@ -87,7 +90,9 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
       addNotification({
         orgId: org.id,
         title: `Invoice ${invoice.invoiceNumber} Emailed`,
-        message: `Successfully dispatched invoice with PDF attachment to ${result.recipientEmail} (ID: ${result.messageId}).`,
+        message: result.simulated
+          ? `Demo simulation prepared invoice ${invoice.invoiceNumber} for ${result.recipientEmail}. No email was sent.`
+          : `Successfully dispatched invoice with PDF attachment to ${result.recipientEmail} (ID: ${result.messageId}).`,
         type: "system",
         link: `/invoices`,
       });
@@ -140,15 +145,22 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
             </div>
             <div>
               <h4 className="font-bold text-base text-slate-900">
-                Invoice submitted for email delivery
+                {sentResult.simulated ? "Invoice email simulated" : "Invoice submitted for email delivery"}
               </h4>
               <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto">
-                Invoice PDF <strong>{sentResult.attachedFilename}</strong> was
-                submitted to the configured mail server for
-                <span className="font-semibold text-slate-900">
-                  {sentResult.recipientEmail}
-                </span>
-                .
+                {sentResult.simulated ? (
+                  <>
+                    The email preview and PDF <strong>{sentResult.attachedFilename}</strong> were
+                    prepared for <span className="font-semibold text-slate-900">{sentResult.recipientEmail}</span>.
+                    No email was sent in this browser-only demo.
+                  </>
+                ) : (
+                  <>
+                    Invoice PDF <strong>{sentResult.attachedFilename}</strong> was
+                    submitted to the configured mail server for
+                    <span className="font-semibold text-slate-900">{sentResult.recipientEmail}</span>.
+                  </>
+                )}
               </p>
             </div>
 
@@ -166,8 +178,10 @@ export const EmailInvoiceModal: React.FC<EmailInvoiceModalProps> = ({
                 {sentResult.attachedFilename} (Vector PDF)
               </div>
               <div>
-                <span className="text-slate-400">Status:</span> Accepted by
-                configured SMTP server
+                <span className="text-slate-400">Status:</span>{" "}
+                {sentResult.simulated
+                  ? "Demo simulation — not transmitted"
+                  : "Accepted by configured SMTP server"}
               </div>
             </div>
 
