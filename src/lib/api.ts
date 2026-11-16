@@ -16,6 +16,9 @@ import {
 } from "../types/index.ts";
 
 const API_BASE = (import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "");
+// This branch is the browser-only recruiter demo. Public contact submissions
+// are stored locally and marked as simulated instead of being sent to a server.
+const DEMO_BRANCH_MODE = true;
 
 export class ApiError extends Error {
   status: number;
@@ -132,7 +135,20 @@ export const api = {
     subject?: string;
     message: string;
   }) {
-    return request<{ success: boolean; messageId: string }>(
+    if (DEMO_BRANCH_MODE) {
+      const messageId = `demo-contact-${Date.now()}`;
+      try {
+        const key = "lp_demo_contact_submissions";
+        const existing = JSON.parse(localStorage.getItem(key) || "[]");
+        const rows = Array.isArray(existing) ? existing : [];
+        rows.unshift({ ...payload, messageId, createdAt: new Date().toISOString() });
+        localStorage.setItem(key, JSON.stringify(rows.slice(0, 25)));
+      } catch {
+        // The demo remains usable when browser storage is unavailable.
+      }
+      return { success: true, messageId, simulated: true };
+    }
+    return request<{ success: boolean; messageId: string; simulated?: boolean }>(
       "/contact",
       json("POST", payload),
       false,
